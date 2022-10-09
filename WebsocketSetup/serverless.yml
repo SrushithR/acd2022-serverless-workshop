@@ -1,0 +1,74 @@
+service: websocket-setup
+
+useDotenv: true
+
+provider:
+  name: aws
+  deploymentMethod: direct
+  region: ${env:REGION, "ap-south-1"}
+  stage: ${opt:stage, "dev"}
+  runtime: nodejs16.x
+  memorySize: 1024
+  timeout: 30
+
+resources:
+  Resources:
+    ConnectionManagement:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: connection-management
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: connectionId
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: N
+        KeySchema:
+          - AttributeName: connectionId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: UserIdIndex
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+            Projection:
+              ProjectionType: "ALL"
+
+functions:
+  RTCEventHandler:
+    handler: RTCEventHandler/index.EventHandler
+    package:
+      individually: true
+      artifact: "./dist/RTCEventHandler.zip"
+    events:
+      - websocket:
+          route: $connect
+          routeResponseSelectionExpression: $default
+          # TODO: Add Cognito Authorizer
+          # authorizer: ${file(./resource/Authorizers.yml):socketAuthorizerOptions}
+      - websocket:
+          route: $disconnect
+          routeResponseSelectionExpression: $default # TODO: Read more
+      - websocket:
+          route: $default
+          routeResponseSelectionExpression: $default # TODO: Read more
+    websocket:
+      level: INFO
+  RTCMessagePublisher:
+    handler: RTCMessagePublisher/index.publishMessage
+    name: websocket-message-publisher
+    package:
+      individually: true
+      artifact: "./dist/RTCMessagePublisher.zip"
+    environment:
+      WEBSOCKET_DOMAIN:
+        {
+          "Fn::Join":
+            [
+              "",
+              [
+                { "Ref": "WebsocketsApi" },
+                ".execute-api.${self:provider.region}.amazonaws.com",
+              ],
+            ],
+        }
