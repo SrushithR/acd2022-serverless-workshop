@@ -1,0 +1,33 @@
+service: eventbridge-setup
+
+useDotenv: true
+
+provider:
+  name: aws
+  deploymentMethod: direct
+  region: ${env:REGION, "ap-south-1"}
+  stage: ${opt:stage, "dev"}
+  runtime: nodejs16.x
+  memorySize: 1024
+  timeout: 30
+
+resources:
+  Resources:
+    EventBridgeBus:
+      Type: AWS::Events::EventBus
+      Properties:
+        Name: ${self:custom.EventBusName}
+
+functions:
+  myFunction:
+    handler: index.handler
+    events:
+      - eventBridge:
+          pattern:
+            source:
+              - 'custom.foodApp' # TODO: better naming
+            detail-type:
+              - ''
+            detail:
+              state:
+                - pending

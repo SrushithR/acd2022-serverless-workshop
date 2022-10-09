@@ -1,0 +1,46 @@
+Type: "AWS::Cognito::UserPool"
+Properties:
+  MfaConfiguration: OFF
+  UserPoolName: food-app # TODO: Rename
+  AccountRecoverySetting:
+    RecoveryMechanisms:
+      - Name: verified_email
+        Priority: 1
+  AutoVerifiedAttributes:
+    - email
+  VerificationMessageTemplate:
+    DefaultEmailOption: CONFIRM_WITH_CODE
+  EmailVerificationSubject: 'Your verification code'
+  EmailVerificationMessage: 'Please use the code to verify your email address - {####}'
+  UsernameAttributes:
+    - email
+  Policies:
+    PasswordPolicy:
+      MinimumLength: 6
+      RequireLowercase: True
+      RequireNumbers: True
+      RequireSymbols: False
+      RequireUppercase: True
+  Schema:
+    - Name: name
+      AttributeDataType: String
+      Mutable: true
+      Required: false
+      StringAttributeConstraints:
+        MinLength: 0
+        MaxLength: 2048
+    - Name: email
+      AttributeDataType: String
+      Mutable: true
+      Required: true
+      StringAttributeConstraints:
+        MinLength: 0
+        MaxLength: 2048
+    - Name: picture
+      AttributeDataType: String
+      Mutable: true
+      Required: false
+      StringAttributeConstraints:
+        MinLength: 0
+        MaxLength: 2048
+

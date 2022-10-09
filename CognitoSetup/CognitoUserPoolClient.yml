@@ -1,0 +1,32 @@
+Type: "AWS::Cognito::UserPoolClient"
+Properties:
+  ClientName: food-app-web-client # TODO: rename this
+  GenerateSecret: False
+  SupportedIdentityProviders:
+    - "COGNITO"
+  AllowedOAuthFlowsUserPoolClient: true
+  AllowedOAuthFlows:
+    - "code"
+  CallbackURLs: 
+    - ${param:APP_URL} # TODO: update this
+  LogoutURLs: 
+    - ${param:APP_URL} # TODO: update this
+  DefaultRedirectURI: ${param:APP_URL} # TODO: update this
+  PreventUserExistenceErrors: LEGACY
+  AllowedOAuthScopes:
+    - "phone"
+    - "email"
+    - "openid"
+    - "profile"
+    - "aws.cognito.signin.user.admin"
+  ReadAttributes:
+    - "email"
+    - "email_verified"
+    - "name"
+    - "picture"
+  WriteAttributes:
+    - "name"
+    - "email"
+    - "picture"
+  UserPoolId:
+    Ref: CognitoUserPool
