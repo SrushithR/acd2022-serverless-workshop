@@ -1,0 +1,9 @@
+site_name: ACD 2022 Serverless Workshop
+theme:
+  name: material
+  palette:
+    primary: orange
+    scheme: preference
+
+markdown_extensions:
+  - admonition
