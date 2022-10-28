@@ -1,6 +1,6 @@
 Type: "AWS::Cognito::UserPoolClient"
 Properties:
-  ClientName: food-app-web-client # TODO: rename this
+  ClientName: awsome-food-app-web-client
   GenerateSecret: False
   SupportedIdentityProviders:
     - "COGNITO"
@@ -8,10 +8,10 @@ Properties:
   AllowedOAuthFlows:
     - "code"
   CallbackURLs: 
-    - ${param:APP_URL} # TODO: update this
+    - https://rashmisubhash.github.io/zomatoe-working/
   LogoutURLs: 
-    - ${param:APP_URL} # TODO: update this
-  DefaultRedirectURI: ${param:APP_URL} # TODO: update this
+    - https://rashmisubhash.github.io/zomatoe-working/
+  DefaultRedirectURI: https://rashmisubhash.github.io/zomatoe-working/
   PreventUserExistenceErrors: LEGACY
   AllowedOAuthScopes:
     - "phone"
@@ -23,10 +23,12 @@ Properties:
     - "email"
     - "email_verified"
     - "name"
-    - "picture"
+    - "address"
+    - "phone_number"
   WriteAttributes:
     - "name"
     - "email"
-    - "picture"
+    - "address"
+    - "phone_number"
   UserPoolId:
     Ref: CognitoUserPool

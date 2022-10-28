@@ -1,0 +1,477 @@
+{
+  "service": {
+    "service": "auth-setup",
+    "serviceObject": {
+      "name": "auth-setup"
+    },
+    "provider": {
+      "name": "aws",
+      "region": "eu-west-2",
+      "stage": "dev",
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "CognitoUserPool": {
+            "Type": "AWS::Cognito::UserPool",
+            "Properties": {
+              "MfaConfiguration": "OFF",
+              "UserPoolName": "awsome-food-app",
+              "AccountRecoverySetting": {
+                "RecoveryMechanisms": [
+                  {
+                    "Name": "verified_email",
+                    "Priority": 1
+                  }
+                ]
+              },
+              "AutoVerifiedAttributes": [
+                "email"
+              ],
+              "VerificationMessageTemplate": {
+                "DefaultEmailOption": "CONFIRM_WITH_CODE"
+              },
+              "EmailVerificationSubject": "Your verification code",
+              "EmailVerificationMessage": "Please use the code to verify your email address - {####}",
+              "UsernameAttributes": [
+                "email"
+              ],
+              "Policies": {
+                "PasswordPolicy": {
+                  "MinimumLength": 6,
+                  "RequireLowercase": true,
+                  "RequireNumbers": true,
+                  "RequireSymbols": false,
+                  "RequireUppercase": true
+                }
+              },
+              "Schema": [
+                {
+                  "Name": "name",
+                  "AttributeDataType": "String",
+                  "Mutable": true,
+                  "Required": true,
+                  "StringAttributeConstraints": {
+                    "MinLength": 0,
+                    "MaxLength": 2048
+                  }
+                },
+                {
+                  "Name": "email",
+                  "AttributeDataType": "String",
+                  "Mutable": true,
+                  "Required": true,
+                  "StringAttributeConstraints": {
+                    "MinLength": 0,
+                    "MaxLength": 2048
+                  }
+                },
+                {
+                  "Name": "phone_number",
+                  "AttributeDataType": "String",
+                  "Mutable": true,
+                  "Required": true,
+                  "StringAttributeConstraints": {
+                    "MinLength": 1,
+                    "MaxLength": 15
+                  }
+                },
+                {
+                  "Name": "address",
+                  "AttributeDataType": "String",
+                  "Mutable": true,
+                  "Required": true,
+                  "StringAttributeConstraints": {
+                    "MinLength": 0,
+                    "MaxLength": 2048
+                  }
+                }
+              ]
+            }
+          },
+          "CognitoUserPoolClient": {
+            "Type": "AWS::Cognito::UserPoolClient",
+            "Properties": {
+              "ClientName": "awsome-food-app-web-client",
+              "GenerateSecret": false,
+              "SupportedIdentityProviders": [
+                "COGNITO"
+              ],
+              "AllowedOAuthFlowsUserPoolClient": true,
+              "AllowedOAuthFlows": [
+                "code"
+              ],
+              "CallbackURLs": [
+                "https://rashmisubhash.github.io/zomatoe-working/"
+              ],
+              "LogoutURLs": [
+                "https://rashmisubhash.github.io/zomatoe-working/"
+              ],
+              "DefaultRedirectURI": "https://rashmisubhash.github.io/zomatoe-working/",
+              "PreventUserExistenceErrors": "LEGACY",
+              "AllowedOAuthScopes": [
+                "phone",
+                "email",
+                "openid",
+                "profile",
+                "aws.cognito.signin.user.admin"
+              ],
+              "ReadAttributes": [
+                "email",
+                "email_verified",
+                "name",
+                "address",
+                "phone_number"
+              ],
+              "WriteAttributes": [
+                "name",
+                "email",
+                "address",
+                "phone_number"
+              ],
+              "UserPoolId": {
+                "Ref": "CognitoUserPool"
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            },
+            "Export": {
+              "Name": "sls-auth-setup-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "CognitoUserPoolARN": {
+            "Value": {
+              "Fn::GetAtt": [
+                "CognitoUserPool",
+                "Arn"
+              ]
+            }
+          },
+          "CognitoUserPoolId": {
+            "Value": {
+              "Ref": "CognitoUserPool"
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      }
+    },
+    "pluginsData": {},
+    "functions": {},
+    "resources": {
+      "Resources": {
+        "CognitoUserPool": {
+          "Type": "AWS::Cognito::UserPool",
+          "Properties": {
+            "MfaConfiguration": "OFF",
+            "UserPoolName": "awsome-food-app",
+            "AccountRecoverySetting": {
+              "RecoveryMechanisms": [
+                {
+                  "Name": "verified_email",
+                  "Priority": 1
+                }
+              ]
+            },
+            "AutoVerifiedAttributes": [
+              "email"
+            ],
+            "VerificationMessageTemplate": {
+              "DefaultEmailOption": "CONFIRM_WITH_CODE"
+            },
+            "EmailVerificationSubject": "Your verification code",
+            "EmailVerificationMessage": "Please use the code to verify your email address - {####}",
+            "UsernameAttributes": [
+              "email"
+            ],
+            "Policies": {
+              "PasswordPolicy": {
+                "MinimumLength": 6,
+                "RequireLowercase": true,
+                "RequireNumbers": true,
+                "RequireSymbols": false,
+                "RequireUppercase": true
+              }
+            },
+            "Schema": [
+              {
+                "Name": "name",
+                "AttributeDataType": "String",
+                "Mutable": true,
+                "Required": true,
+                "StringAttributeConstraints": {
+                  "MinLength": 0,
+                  "MaxLength": 2048
+                }
+              },
+              {
+                "Name": "email",
+                "AttributeDataType": "String",
+                "Mutable": true,
+                "Required": true,
+                "StringAttributeConstraints": {
+                  "MinLength": 0,
+                  "MaxLength": 2048
+                }
+              },
+              {
+                "Name": "phone_number",
+                "AttributeDataType": "String",
+                "Mutable": true,
+                "Required": true,
+                "StringAttributeConstraints": {
+                  "MinLength": 1,
+                  "MaxLength": 15
+                }
+              },
+              {
+                "Name": "address",
+                "AttributeDataType": "String",
+                "Mutable": true,
+                "Required": true,
+                "StringAttributeConstraints": {
+                  "MinLength": 0,
+                  "MaxLength": 2048
+                }
+              }
+            ]
+          }
+        },
+        "CognitoUserPoolClient": {
+          "Type": "AWS::Cognito::UserPoolClient",
+          "Properties": {
+            "ClientName": "awsome-food-app-web-client",
+            "GenerateSecret": false,
+            "SupportedIdentityProviders": [
+              "COGNITO"
+            ],
+            "AllowedOAuthFlowsUserPoolClient": true,
+            "AllowedOAuthFlows": [
+              "code"
+            ],
+            "CallbackURLs": [
+              "https://rashmisubhash.github.io/zomatoe-working/"
+            ],
+            "LogoutURLs": [
+              "https://rashmisubhash.github.io/zomatoe-working/"
+            ],
+            "DefaultRedirectURI": "https://rashmisubhash.github.io/zomatoe-working/",
+            "PreventUserExistenceErrors": "LEGACY",
+            "AllowedOAuthScopes": [
+              "phone",
+              "email",
+              "openid",
+              "profile",
+              "aws.cognito.signin.user.admin"
+            ],
+            "ReadAttributes": [
+              "email",
+              "email_verified",
+              "name",
+              "address",
+              "phone_number"
+            ],
+            "WriteAttributes": [
+              "name",
+              "email",
+              "address",
+              "phone_number"
+            ],
+            "UserPoolId": {
+              "Ref": "CognitoUserPool"
+            }
+          }
+        }
+      },
+      "Outputs": {
+        "CognitoUserPoolARN": {
+          "Value": {
+            "Fn::GetAtt": [
+              "CognitoUserPool",
+              "Arn"
+            ]
+          }
+        },
+        "CognitoUserPoolId": {
+          "Value": {
+            "Ref": "CognitoUserPool"
+          }
+        }
+      }
+    },
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless.yml",
+    "initialServerlessConfig": {
+      "service": "auth-setup",
+      "useDotenv": true,
+      "provider": {
+        "$ref": "$[\"service\"][\"provider\"]"
+      },
+      "resources": {
+        "$ref": "$[\"service\"][\"resources\"]"
+      }
+    },
+    "layers": {},
+    "isDashboardMonitoringPreconfigured": false
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/auth-setup/dev/1666967994565-2022-10-28T14:39:54.565Z",
+    "artifact": ""
+  }
+}

@@ -5,7 +5,7 @@ useDotenv: true
 provider:
   name: aws
   deploymentMethod: direct
-  region: ${env:REGION, "ap-south-1"}
+  region: ${env:REGION, "eu-west-2"}
   stage: ${opt:stage, "dev"}
   runtime: nodejs16.x
   memorySize: 1024

@@ -1,7 +1,7 @@
 Type: "AWS::Cognito::UserPool"
 Properties:
   MfaConfiguration: OFF
-  UserPoolName: food-app # TODO: Rename
+  UserPoolName: awsome-food-app
   AccountRecoverySetting:
     RecoveryMechanisms:
       - Name: verified_email
@@ -25,7 +25,7 @@ Properties:
     - Name: name
       AttributeDataType: String
       Mutable: true
-      Required: false
+      Required: true
       StringAttributeConstraints:
         MinLength: 0
         MaxLength: 2048
@@ -36,11 +36,19 @@ Properties:
       StringAttributeConstraints:
         MinLength: 0
         MaxLength: 2048
-    - Name: picture
+    - Name: phone_number
       AttributeDataType: String
       Mutable: true
-      Required: false
+      Required: true
+      StringAttributeConstraints:
+        MinLength: 1
+        MaxLength: 15
+    - Name: address
+      AttributeDataType: String
+      Mutable: true
+      Required: true
       StringAttributeConstraints:
         MinLength: 0
         MaxLength: 2048
+
 

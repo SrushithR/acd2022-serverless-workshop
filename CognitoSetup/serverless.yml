@@ -3,13 +3,13 @@ useDotenv: true
 
 provider:
   name: aws
-  region: ${opt:region, "ap-south-1"}
+  region: ${opt:region, "eu-west-2"}
   stage: ${opt:stage, "dev"}
 
 resources:
   Resources:
-    CognitoUserPool: ${file(./CognitoSetup/CognitoUserPool.yml)}
-    CognitoUserPoolClient: ${file(./CognitoSetup/CognitoUserPoolClient.yml)}
+    CognitoUserPool: ${file(./CognitoUserPool.yml)}
+    CognitoUserPoolClient: ${file(./CognitoUserPoolClient.yml)}
 
   Outputs:
     CognitoUserPoolARN:
