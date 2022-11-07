@@ -1,0 +1,30 @@
+{
+  "requestContext": {
+    "routeKey": "$disconnect",
+    "connectionId": "a4BGce14vHcCHhQ=",
+    "authorizer": {
+      "claims": {
+        "sub": "06e6331b-5d12-4cda-a313-dc7a520df615",
+        "email_verified": "true",
+        "profile": "1",
+        "iss": "https://cognito-idp.ap-south-1.amazonaws.com/ap-south-1_acJo3XGbL",
+        "cognito:username": "1c821e07-8bf9-4b91-b527-244625138560",
+        "custom:clientType": "1",
+        "picture": "https://firebasestorage.googleapis.com/v0/b/konfhub.appspot.com/o/'%2Fconference-photos%2F'images.png?alt=media&token=660d5d7b-d976-49d8-b603-3a0842f80aad",
+        "origin_jti": "7445aba4-03db-4909-b0cd-2bc5ab69192e",
+        "custom:userType": "1",
+        "aud": "5jf10rk2c0muftotp1iu2ucup0",
+        "event_id": "78375599-588d-4bef-9d17-7f27e3fc0a8e",
+        "custom:lastEvent": "f05bb5c3-373f-4151-8217-4c86bb5813cc",
+        "token_use": "id",
+        "auth_time": "1666259520",
+        "name": "KonfHub",
+        "exp": "Mon Nov 07 10:04:35 UTC 2022",
+        "iat": "Mon Nov 07 09:04:35 UTC 2022",
+        "jti": "7a51e835-06f7-4fa3-9c64-7ff3b72a8c76",
+        "email": "srushith@konfhub.com"
+      }
+    },
+    "requestId": "a6349e59-4337-45ca-8b17-ef793f5051cd"
+  }
+}

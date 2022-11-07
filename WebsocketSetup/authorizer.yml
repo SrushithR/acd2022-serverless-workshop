@@ -1,0 +1,3 @@
+name: cognitoAuthorizer
+type: COGNITO_USER_POOLS
+arn: ${self:custom.COGNITO_ARN}

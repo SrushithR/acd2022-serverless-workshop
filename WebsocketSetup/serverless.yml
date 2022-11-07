@@ -7,60 +7,70 @@ provider:
   deploymentMethod: direct
   region: ${env:REGION, "eu-west-2"}
   stage: ${opt:stage, "dev"}
-  runtime: nodejs16.x
+  runtime: python3.8
   memorySize: 1024
   timeout: 30
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - { "Fn::GetAtt": [ "ConnectionManagement", "Arn" ] }
+
+custom:
+  COGNITO_STACK_NAME: auth-setup-dev
+  COGNITO_ARN: ${cf:${self:custom.COGNITO_STACK_NAME}.CognitoUserPoolARN}
 
 resources:
   Resources:
     ConnectionManagement:
       Type: "AWS::DynamoDB::Table"
       Properties:
-        TableName: connection-management
+        TableName: connection-manager
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
-          - AttributeName: connectionId
+          - AttributeName: connection_id
             AttributeType: S
-          - AttributeName: userId
-            AttributeType: N
+          - AttributeName: user_id
+            AttributeType: S
         KeySchema:
-          - AttributeName: connectionId
+          - AttributeName: connection_id
             KeyType: HASH
         GlobalSecondaryIndexes:
           - IndexName: UserIdIndex
             KeySchema:
-              - AttributeName: userId
+              - AttributeName: user_id
                 KeyType: HASH
             Projection:
               ProjectionType: "ALL"
 
 functions:
-  RTCEventHandler:
-    handler: RTCEventHandler/index.EventHandler
-    package:
-      individually: true
-      artifact: "./dist/RTCEventHandler.zip"
+  rtc_handler:
+    handler: src/event_handler.lambda_function
     events:
       - websocket:
           route: $connect
           routeResponseSelectionExpression: $default
-          # TODO: Add Cognito Authorizer
-          # authorizer: ${file(./resource/Authorizers.yml):socketAuthorizerOptions}
       - websocket:
           route: $disconnect
-          routeResponseSelectionExpression: $default # TODO: Read more
+          routeResponseSelectionExpression: $default
       - websocket:
           route: $default
-          routeResponseSelectionExpression: $default # TODO: Read more
+          routeResponseSelectionExpression: $default
     websocket:
       level: INFO
-  RTCMessagePublisher:
-    handler: RTCMessagePublisher/index.publishMessage
+
+  rtc_message_publisher:
+    handler: src/message_publisher.lambda_function
     name: websocket-message-publisher
-    package:
-      individually: true
-      artifact: "./dist/RTCMessagePublisher.zip"
     environment:
+#      WEBSOCKET_DOMAIN: g0m7cr37nf.execute-api.eu-west-2.amazonaws.com
       WEBSOCKET_DOMAIN:
         {
           "Fn::Join":

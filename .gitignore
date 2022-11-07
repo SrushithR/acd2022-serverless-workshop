@@ -1,1 +1,3 @@
 .idea
+WebsocketSetup/src/__pycache__/
+*/.serverless
