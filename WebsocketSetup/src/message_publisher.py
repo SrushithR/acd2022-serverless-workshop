@@ -24,11 +24,9 @@ def get_connection_id(user_id):
 def lambda_function(event, context):
     print("Input", event)
     user_id = event["user_id"]
+    message = event["message"]
     connection_id = get_connection_id(user_id)
 
-    message = {
-        "message": "Order placed successfully finally"
-    }
     response = client.post_to_connection(
         Data=json.dumps(message),
         ConnectionId=connection_id
