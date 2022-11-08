@@ -1,4 +1,15 @@
 {
-  "message": "Order successful",
-  "user_id": "06e6331b-5d12-4cda-a313-dc7a520df615"
+  "version": "0",
+  "id": "9c08d8ba-ea5d-bf76-d067-2cbf7f7d79f9",
+  "detail-type": "restaurant",
+  "source": "custom.food_app",
+  "account": "167771397877",
+  "time": "2022-11-08T08:19:10Z",
+  "region": "eu-west-2",
+  "resources": [],
+  "detail": {
+    "order_id": 23123,
+    "order_status": "accepted",
+    "user_id": "06e6331b-5d12-4cda-a313-dc7a520df615"
+  }
 }

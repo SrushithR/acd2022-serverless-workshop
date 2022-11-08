@@ -22,11 +22,12 @@ def get_connection_id(user_id):
 
 def lambda_function(event, context):
     print("Input", event)
-    user_id = event["user_id"]
-    message = event["message"]
+    event_details = event["detail"]
+    user_id = event_details["user_id"]
+    del event_details["user_id"]
     connection_id = get_connection_id(user_id)
 
     response = client.post_to_connection(
-        Data=json.dumps(message), ConnectionId=connection_id
+        Data=json.dumps(event_details), ConnectionId=connection_id
     )
     print(response)

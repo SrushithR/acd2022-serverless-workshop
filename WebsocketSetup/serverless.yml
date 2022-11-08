@@ -22,6 +22,17 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - { "Fn::GetAtt": [ "ConnectionManagement", "Arn" ] }
+            - {
+              "Fn::Join":
+                [
+                  "/",
+                  [
+                    { "Fn::GetAtt": [ "ConnectionManagement", "Arn" ] },
+                    "index",
+                    "UserIdIndex",
+                  ],
+                ],
+            }
 
 custom:
   COGNITO_STACK_NAME: auth-setup-dev
@@ -70,15 +81,15 @@ functions:
     handler: src/message_publisher.lambda_function
     name: websocket-message-publisher
     environment:
-#      WEBSOCKET_DOMAIN: g0m7cr37nf.execute-api.eu-west-2.amazonaws.com
-      WEBSOCKET_DOMAIN:
-        {
-          "Fn::Join":
-            [
-              "",
-              [
-                { "Ref": "WebsocketsApi" },
-                ".execute-api.${self:provider.region}.amazonaws.com",
-              ],
-            ],
-        }
+      WEBSOCKET_DOMAIN: g0m7cr37nf.execute-api.eu-west-2.amazonaws.com
+#      WEBSOCKET_DOMAIN:
+#        {
+#          "Fn::Join":
+#            [
+#              "",
+#              [
+#                { "Ref": "WebsocketsApi" },
+#                ".execute-api.${self:provider.region}.amazonaws.com",
+#              ],
+#            ],
+#        }
