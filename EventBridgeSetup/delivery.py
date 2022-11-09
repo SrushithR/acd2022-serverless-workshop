@@ -20,7 +20,7 @@ def lambda_function(event, context):
         "order_id": order_details["order_id"],
         "order_details": order_details["order_details"],
         "order_status": ORDER_STATUSES["ORDER_DELIVERED"],
-        "user_id": order_details["user_id"]
+        "user_id": order_details["user_id"],
     }
 
     response = client.put_events(
