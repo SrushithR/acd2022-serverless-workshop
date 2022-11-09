@@ -5,7 +5,7 @@ connection_manager = dynamodb_resource.Table("connection-manager")
 
 
 def lambda_function(event, context):
-    print("Input", event)
+    print("Input to the lambda function", event)
     route = event["requestContext"]["routeKey"]
     connection_id = event["requestContext"]["connectionId"]
 

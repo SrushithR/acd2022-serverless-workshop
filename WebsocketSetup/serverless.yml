@@ -61,6 +61,36 @@ resources:
             Projection:
               ProjectionType: "ALL"
 
+  Outputs:
+    WebSocketDomain:
+      Value:
+        {
+          "Fn::Join":
+            [
+              "",
+              [
+                { "Ref": "WebsocketsApi" },
+                ".execute-api.${self:provider.region}.amazonaws.com",
+              ],
+            ],
+        }
+    ConnectionManagerDDB:
+      Value:
+        { "Fn::GetAtt": [ "ConnectionManagement", "Arn" ] }
+    ConnectionManagerDDBIndex:
+      Value:
+        {
+          "Fn::Join":
+            [
+              "/",
+              [
+                { "Fn::GetAtt": [ "ConnectionManagement", "Arn" ] },
+                "index",
+                "UserIdIndex",
+              ],
+            ],
+        }
+
 functions:
   rtc_handler:
     handler: src/event_handler.lambda_function
@@ -81,15 +111,15 @@ functions:
     handler: src/message_publisher.lambda_function
     name: websocket-message-publisher
     environment:
-      WEBSOCKET_DOMAIN: g0m7cr37nf.execute-api.eu-west-2.amazonaws.com
-#      WEBSOCKET_DOMAIN:
-#        {
-#          "Fn::Join":
-#            [
-#              "",
-#              [
-#                { "Ref": "WebsocketsApi" },
-#                ".execute-api.${self:provider.region}.amazonaws.com",
-#              ],
-#            ],
-#        }
+#      WEBSOCKET_DOMAIN: g0m7cr37nf.execute-api.eu-west-2.amazonaws.com
+      WEBSOCKET_DOMAIN:
+        {
+          "Fn::Join":
+            [
+              "",
+              [
+                { "Ref": "WebsocketsApi" },
+                ".execute-api.${self:provider.region}.amazonaws.com",
+              ],
+            ],
+        }
