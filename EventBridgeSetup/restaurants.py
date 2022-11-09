@@ -19,7 +19,7 @@ def lambda_function(event, context):
     order_details = {
         "order_id": order_details["order_id"],
         "order_details": order_details["order_details"],
-        "order_status": ORDER_STATUSES["ORDER_DONE"],
+        "order_status": ORDER_STATUSES["ORDER_COMPLETED"],
         "user_id": order_details["user_id"]
     }
 
@@ -28,7 +28,7 @@ def lambda_function(event, context):
             {
                 "Time": datetime.now(),
                 "Source": "custom.food_app",
-                "DetailType": "order_done",
+                "DetailType": "order_completed",
                 "Detail": json.dumps(order_details),
                 "EventBusName": EVENT_BUS_NAME,
             },

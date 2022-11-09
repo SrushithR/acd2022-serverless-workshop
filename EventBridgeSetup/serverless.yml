@@ -18,9 +18,28 @@ provider:
           Action:
             - "events:*"
           Resource: "arn:aws:events:${aws:region}:${aws:accountId}:event-bus/${self:custom.EVENT_BUS_NAME}"
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - ${self:custom.CONNECTION_MANAGER_DDB}
+            - ${self:custom.CONNECTION_MANGER_DDB_INDEX}
+        - Effect: "Allow"
+          Action:
+            - execute-api:ManageConnections
+          Resource:
+            - arn:aws:execute-api:*:*:*/@connections/*
 
 custom:
   EVENT_BUS_NAME: food-app-notifications
+  WEBSOCKET_STACK_NAME: websocket-setup-dev
+  WEBSOCKET_DOMAIN: ${cf:websocket-setup-dev.WebSocketDomain}
+  CONNECTION_MANAGER_DDB: ${cf:websocket-setup-dev.ConnectionManagerDDB}
+  CONNECTION_MANGER_DDB_INDEX: ${cf:websocket-setup-dev.ConnectionManagerDDBIndex}
 
 resources:
   Resources:
@@ -102,14 +121,16 @@ resources:
 
 functions:
   notification_service:
-    handler: src/notifications.lambda_function
+    handler: notifications.lambda_function
     name: notification_service
+    environment:
+      WEBSOCKET_DOMAIN: ${self:custom.WEBSOCKET_DOMAIN}
   restaurants_service:
-    handler: src/restaurants.lambda_function
+    handler: restaurants.lambda_function
     name: restaurants_service
   delivery_service:
-    handler: src/delivery.lambda_function
+    handler: delivery.lambda_function
     name: delivery_service
   orders_service:
-    handler: src/orders.lambda_function
+    handler: orders.lambda_function
     name: orders_service
