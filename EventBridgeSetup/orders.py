@@ -8,12 +8,32 @@ EVENT_BUS_NAME = os.environ["EVENT_BUS_NAME"]
 
 
 client = boto3.client("events")
+ddb_client = boto3.resource("dynamodb")
+table = ddb_client.Table("foodorder")
 
 
 def lambda_function(event, context):
+    order_id = "OR00" + context.aws_request_id
+    table.put_item(
+        Item={
+            "ID": "A00" + context.aws_request_id,
+            "restaurant_id": event["restaurant_id"],
+            "order_amount": event["order_amount"],
+            "order_discount": event["order_discount"],
+            "order_amount_final": event["order_amount_final"],
+            "items": event["items"],
+            "Type": "Order",
+            "customer_mobile": event["customer_mobile"],
+            "order_status": "Order Placed",
+            "order_id": order_id,
+            "menu_id": event["menu_id"],
+            "customer_name": event["customer_name"],
+            "order_placed_at": (datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
+        }
+    )
+
     order_details = {
         "order_id": event["order_id"],
-        "order_details": [{"item_id": 1234}],
         "order_status": ORDER_STATUSES["ORDER_PLACED"],
         "user_id": event["user_id"],
     }

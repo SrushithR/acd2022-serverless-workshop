@@ -9,13 +9,27 @@ EVENT_BUS_NAME = os.environ["EVENT_BUS_NAME"]
 
 
 client = boto3.client("events")
+ddb_client = boto3.resource("dynamodb")
+table = ddb_client.Table("foodorder")
 
 
 def lambda_function(event, context):
     print("Input", event)
     time.sleep(5)
-    # TODO: Update DDB
+
     order_details = event["detail"]
+    order_id = order_details["order_id"]
+
+    response = table.update_item(
+        Key={"ID": order_id, "Type": "Order"},
+        UpdateExpression="SET order_status= :var1, order_delivered_at= :var2",
+        ExpressionAttributeValues={
+            ":var1": ORDER_STATUSES["ORDER_DELIVERED"],
+            ":var2": (datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
+        },
+        ReturnValues="UPDATED_NEW",
+    )
+
     order_details = {
         "order_id": order_details["order_id"],
         "order_details": order_details["order_details"],
