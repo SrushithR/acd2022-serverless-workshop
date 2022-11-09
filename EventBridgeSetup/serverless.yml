@@ -4,30 +4,112 @@ useDotenv: true
 
 provider:
   name: aws
-  deploymentMethod: direct
   region: ${env:REGION, "eu-west-2"}
   stage: ${opt:stage, "dev"}
-  runtime: nodejs16.x
+  runtime: python3.8
   memorySize: 1024
   timeout: 30
+  environment:
+    EVENT_BUS_NAME: ${self:custom.EVENT_BUS_NAME}
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "events:*"
+          Resource: "arn:aws:events:${aws:region}:${aws:accountId}:event-bus/${self:custom.EVENT_BUS_NAME}"
+
+custom:
+  EVENT_BUS_NAME: food-app-notifications
 
 resources:
   Resources:
     EventBridgeBus:
       Type: AWS::Events::EventBus
       Properties:
-        Name: ${self:custom.EventBusName}
+        Name: ${self:custom.EVENT_BUS_NAME}
+    OrderPlacedRule:
+      Type: AWS::Events::Rule
+      DependsOn: "EventBridgeBus"
+      Properties:
+        Name: order_placed
+        EventBusName: ${self:custom.EVENT_BUS_NAME}
+        EventPattern:
+          source:
+            - custom.food_app
+          detail-type:
+            - order_placed
+        State: "ENABLED"
+        Targets:
+          - Arn: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:notification_service
+            Id: "NotificationService"
+          - Arn: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:restaurants_service
+            Id: "RestaurantsService"
+    OrderCompletedRule:
+      Type: AWS::Events::Rule
+      DependsOn: "EventBridgeBus"
+      Properties:
+        Name: order_completed
+        EventBusName: ${self:custom.EVENT_BUS_NAME}
+        EventPattern:
+          source:
+            - custom.food_app
+          detail-type:
+            - order_completed
+        State: "ENABLED"
+        Targets:
+          - Arn: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:notification_service
+            Id: "NotificationService"
+          - Arn: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:delivery_service
+            Id: "DeliveryService"
+    OrderDelivered:
+      Type: AWS::Events::Rule
+      DependsOn: "EventBridgeBus"
+      Properties:
+        Name: order_delivered
+        EventBusName: ${self:custom.EVENT_BUS_NAME}
+        EventPattern:
+          source:
+            - custom.food_app
+          detail-type:
+            - order_delivered
+        State: "ENABLED"
+        Targets:
+          - Arn: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:notification_service
+            Id: "NotificationService"
+    NotificationsPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName:
+          Ref: "NotificationUnderscoreserviceLambdaFunction"
+        Action: "lambda:InvokeFunction"
+        Principal: "events.amazonaws.com"
+    RestaurantsPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName:
+          Ref: "RestaurantsUnderscoreserviceLambdaFunction"
+        Action: "lambda:InvokeFunction"
+        Principal: "events.amazonaws.com"
+    DeliveryPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName:
+          Ref: "DeliveryUnderscoreserviceLambdaFunction"
+        Action: "lambda:InvokeFunction"
+        Principal: "events.amazonaws.com"
+
 
 functions:
-  myFunction:
-    handler: index.handler
-    events:
-      - eventBridge:
-          pattern:
-            source:
-              - 'custom.foodApp' # TODO: better naming
-            detail-type:
-              - ''
-            detail:
-              state:
-                - pending
+  notification_service:
+    handler: src/notifications.lambda_function
+    name: notification_service
+  restaurants_service:
+    handler: src/restaurants.lambda_function
+    name: restaurants_service
+  delivery_service:
+    handler: src/delivery.lambda_function
+    name: delivery_service
+  orders_service:
+    handler: src/orders.lambda_function
+    name: orders_service
