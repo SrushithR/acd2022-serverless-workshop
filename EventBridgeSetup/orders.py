@@ -36,7 +36,7 @@ def lambda_function(event, context):
 
     order_details = {
         "order_id": id,
-        "order_details": [{ "item_id": 123}],
+        "order_details": [{"item_id": 123}],
         "order_status": ORDER_STATUSES["ORDER_PLACED"],
         "user_id": event["user_id"],
     }
