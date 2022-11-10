@@ -10,7 +10,7 @@ def lambda_function(event, context):
     connection_id = event["requestContext"]["connectionId"]
 
     if route == "$connect":
-        user_id = event["headers"]["user_id"]
+        user_id = event["queryStringParameters"]["user_id"]
         print("Establishing connection")
         user_details = {"user_id": user_id, "connection_id": connection_id}
         connection_manager.put_item(Item=user_details)
