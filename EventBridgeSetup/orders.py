@@ -13,10 +13,12 @@ table = ddb_client.Table("foodorder")
 
 
 def lambda_function(event, context):
+    print("input to the lambda function", event)
     order_id = "OR00" + context.aws_request_id
+    id = "A00" + context.aws_request_id
     table.put_item(
         Item={
-            "ID": "A00" + context.aws_request_id,
+            "ID": id,
             "restaurant_id": event["restaurant_id"],
             "order_amount": event["order_amount"],
             "order_discount": event["order_discount"],
@@ -33,7 +35,8 @@ def lambda_function(event, context):
     )
 
     order_details = {
-        "order_id": event["order_id"],
+        "order_id": id,
+        "order_details": [{ "item_id": 123}],
         "order_status": ORDER_STATUSES["ORDER_PLACED"],
         "user_id": event["user_id"],
     }

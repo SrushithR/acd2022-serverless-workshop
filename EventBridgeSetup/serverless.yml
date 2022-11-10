@@ -134,3 +134,13 @@ functions:
   orders_service:
     handler: orders.lambda_function
     name: orders_service
+    events:
+      - http:
+          path: /order
+          method: post
+          cors: true
+          integration: lambda
+          request:
+            passThrough: WHEN_NO_MATCH
+            template:
+              application/json: '$input.json("$")'

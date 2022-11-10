@@ -17,7 +17,7 @@ table = ddb_client.Table("foodorder")
 
 
 def lambda_function(event, context):
-    print("Input", event)
+    print("Input to the restaurants service", event)
     time.sleep(5)
     order_details = event["detail"]
     order_id = order_details["order_id"]
@@ -31,6 +31,8 @@ def lambda_function(event, context):
         },
         ReturnValues="UPDATED_NEW",
     )
+
+    print("response", response)
 
     order_details = {
         "order_id": order_details["order_id"],
