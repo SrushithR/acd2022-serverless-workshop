@@ -13,7 +13,7 @@
     
     
       
-        <title>Websockets - ACD 2022 Serverless Workshop</title>
+        <title>WebSockets - ACD 2022 Serverless Workshop</title>
       
     
     
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Websockets
+              WebSockets
             
           </span>
         </div>
@@ -223,12 +223,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Websockets
+          WebSockets
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Websockets
+        WebSockets
       </a>
       
         
@@ -288,8 +288,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#steps-to-create-the-notifications-service" class="md-nav__link">
+    Steps to create the Notifications service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#steps-to-create-a-websocket-api" class="md-nav__link">
-    Steps to Create a WebSocket API
+    Steps to create a WebSocket API
   </a>
   
 </li>
@@ -390,8 +397,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#steps-to-create-the-notifications-service" class="md-nav__link">
+    Steps to create the Notifications service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#steps-to-create-a-websocket-api" class="md-nav__link">
-    Steps to Create a WebSocket API
+    Steps to create a WebSocket API
   </a>
   
 </li>
@@ -416,11 +430,12 @@
                   
 
 
-  <h1>Websockets</h1>
+  <h1>WebSockets</h1>
 
 <h2 id="real-time-communication-using-websockets">Real Time Communication Using WebSockets</h2>
 <p>The application leverages WebSockets to create a tunnel between the UI/Client and the backend, using which messages can be transmitted by both parties, to both parties. This eliminates the need to refresh a page every time an update is received to the backend.</p>
 <h3 id="architecture-details">Architecture Details</h3>
+<p>TODO: add diagram</p>
 <p>The notification service leverages the following AWS services:</p>
 <ol>
 <li>Amazon APIGateway’s WebSocket API</li>
@@ -466,7 +481,11 @@
 <li>Idle Connection Timeout - 10 minutes</li>
 <li>Connection duration for WebSocket API - 2 hours</li>
 </ol>
-<h3 id="steps-to-create-a-websocket-api">Steps to Create a WebSocket API</h3>
+<h3 id="steps-to-create-the-notifications-service">Steps to create the Notifications service</h3>
+<p>The notifications service will be composed of 2 lambda functions:
+1. <a href="../WebsocketSetup/src/event_handler.py"><code>event_handler</code></a> - this lambda function is responsible for handling the connections - creating and deleting them from the <code>connection-management</code> DynamoDB table
+2. <a href="../WebsocketSetup/src/message_publisher.py"><code>message_publisher</code></a> - this lambda function is responsible for sending messages to the client using the <code>connection_id</code> by leveraging the API </p>
+<h3 id="steps-to-create-a-websocket-api">Steps to create a WebSocket API</h3>
 <p>Navigate to the API Gateway service on the AWS console and click on <code>Create API</code>, select <code>Build</code> under the <code>WebSocket API</code> section and provide the following details in each section:</p>
 <ol>
 <li>Step 1 (API Details)</li>
