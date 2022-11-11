@@ -11,6 +11,9 @@ provider:
   timeout: 30
   environment:
     EVENT_BUS_NAME: ${self:custom.EVENT_BUS_NAME}
+  apiGateway:
+    restApiId: n39qrnkqc9
+    restApiRootResourceId: 14vm1rmn9i
   iam:
     role:
       statements:
@@ -60,21 +63,19 @@ resources:
             - order_placed
         State: "ENABLED"
         Targets:
-          - Arn: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:notification_service
-            Id: "NotificationService"
           - Arn: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:restaurants_service
             Id: "RestaurantsService"
     OrderCompletedRule:
       Type: AWS::Events::Rule
       DependsOn: "EventBridgeBus"
       Properties:
-        Name: order_completed
+        Name: order_accepted
         EventBusName: ${self:custom.EVENT_BUS_NAME}
         EventPattern:
           source:
             - custom.food_app
           detail-type:
-            - order_completed
+            - order_accepted
         State: "ENABLED"
         Targets:
           - Arn: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:notification_service
@@ -136,7 +137,7 @@ functions:
     name: orders_service
     events:
       - http:
-          path: /order
+          path: /create-order
           method: post
           cors: true
           integration: lambda

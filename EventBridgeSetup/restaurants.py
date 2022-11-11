@@ -18,7 +18,7 @@ table = ddb_client.Table("foodorder")
 
 def lambda_function(event, context):
     print("Input to the restaurants service", event)
-    time.sleep(5)
+    time.sleep(10)
     order_details = event["detail"]
     order_id = order_details["order_id"]
 
@@ -26,7 +26,7 @@ def lambda_function(event, context):
         Key={"ID": order_id, "Type": "Order"},
         UpdateExpression="SET order_status= :var1, order_delivered_at= :var2",
         ExpressionAttributeValues={
-            ":var1": ORDER_STATUSES["ORDER_COMPLETED"],
+            ":var1": ORDER_STATUSES["ORDER_ACCEPTED"],
             ":var2": (datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
         },
         ReturnValues="UPDATED_NEW",
@@ -37,7 +37,7 @@ def lambda_function(event, context):
     order_details = {
         "order_id": order_details["order_id"],
         "order_details": order_details["order_details"],
-        "order_status": ORDER_STATUSES["ORDER_COMPLETED"],
+        "order_status": ORDER_STATUSES["ORDER_ACCEPTED"],
         "user_id": order_details["user_id"],
     }
 
@@ -46,7 +46,7 @@ def lambda_function(event, context):
             {
                 "Time": datetime.now(),
                 "Source": "custom.food_app",
-                "DetailType": "order_completed",
+                "DetailType": "order_accepted",
                 "Detail": json.dumps(order_details),
                 "EventBusName": EVENT_BUS_NAME,
             },
