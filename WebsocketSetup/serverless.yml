@@ -7,7 +7,7 @@ provider:
   deploymentMethod: direct
   region: ${env:REGION, "eu-west-2"}
   stage: ${opt:stage, "dev"}
-  runtime: python3.8
+  runtime: python3.9
   memorySize: 1024
   timeout: 30
   iam:
@@ -93,7 +93,7 @@ resources:
 
 functions:
   rtc_handler:
-    handler: src/event_handler.lambda_function
+    handler: src/event_handler.lambda_handler
     events:
       - websocket:
           route: $connect
@@ -108,7 +108,7 @@ functions:
       level: INFO
 
   rtc_message_publisher:
-    handler: src/message_publisher.lambda_function
+    handler: src/message_publisher.lambda_handler
     name: websocket-message-publisher
     environment:
 #      WEBSOCKET_DOMAIN: g0m7cr37nf.execute-api.eu-west-2.amazonaws.com

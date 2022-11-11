@@ -6,12 +6,13 @@ provider:
   name: aws
   region: ${env:REGION, "eu-west-2"}
   stage: ${opt:stage, "dev"}
-  runtime: python3.8
+  runtime: python3.9
   memorySize: 1024
   timeout: 30
   environment:
     EVENT_BUS_NAME: ${self:custom.EVENT_BUS_NAME}
   apiGateway:
+    # Replace the below with actual API GW IDs
     restApiId: n39qrnkqc9
     restApiRootResourceId: 14vm1rmn9i
   iam:
