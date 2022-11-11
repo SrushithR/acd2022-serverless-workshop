@@ -4,7 +4,7 @@ dynamodb_resource = boto3.resource("dynamodb")
 connection_manager = dynamodb_resource.Table("connection-manager")
 
 
-def lambda_function(event, context):
+def lambda_handler(event, context):
     print("Input to the lambda function", event)
     route = event["requestContext"]["routeKey"]
     connection_id = event["requestContext"]["connectionId"]
