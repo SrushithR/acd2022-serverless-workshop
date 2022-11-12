@@ -143,3 +143,19 @@ Navigate to the `Event Bus` on the left nav bar and click on `Send Events` and:
   "user_id": "68a0f215-8453-45be-a418-5b0b1c94b456"
 }
 ```
+
+### Deploy using Serverless Framework
+
+If you want to deploy all the resources for the EventBridge segment, please use the following resource:
+
+```commandline
+cd EventBridgeSetup
+serverless deploy --region eu-west-2
+```
+
+And the above command would create the following services:
+
+1. 4 lambda functions to simulate 4 microservices - orders, restaurants, delivery, notifications
+2. Event bus
+3. 3 Event rules
+4. Permission for EventBridge to trigger the targets

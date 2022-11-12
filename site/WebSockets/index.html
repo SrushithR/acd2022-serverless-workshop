@@ -301,6 +301,27 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#steps-to-create-the-connection-management-dynamodb-table" class="md-nav__link">
+    Steps to create the Connection Management DynamoDB table
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-lambda-function-settings" class="md-nav__link">
+    Update Lambda function settings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-using-serverless-framework" class="md-nav__link">
+    Deploy using Serverless Framework
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -425,6 +446,27 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#steps-to-create-the-connection-management-dynamodb-table" class="md-nav__link">
+    Steps to create the Connection Management DynamoDB table
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-lambda-function-settings" class="md-nav__link">
+    Update Lambda function settings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-using-serverless-framework" class="md-nav__link">
+    Deploy using Serverless Framework
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -499,6 +541,7 @@
 <p>The notifications service will be composed of 2 lambda functions:
 1. <a href="../WebsocketSetup/src/event_handler.py"><code>event_handler</code></a> - this lambda function is responsible for handling the connections - creating and deleting them from the <code>connection-management</code> DynamoDB table
 2. <a href="../WebsocketSetup/src/message_publisher.py"><code>message_publisher</code></a> - this lambda function is responsible for sending messages to the client using the <code>connection_id</code> by leveraging the API </p>
+<p>Create the above 2 lambda functions using the console</p>
 <h3 id="steps-to-create-a-websocket-api">Steps to create a WebSocket API</h3>
 <p>Navigate to the API Gateway service on the AWS console and click on <code>Create API</code>, select <code>Build</code> under the <code>WebSocket API</code> section and provide the following details in each section:</p>
 <ol>
@@ -514,7 +557,76 @@
 <li>Step 4 (Add Stages) - configure stage name for your WebSocket API. Ex: <code>dev</code></li>
 <li>Step 5 (Review &amp; Create) - review all the configuration details and click on <code>Create and Deploy</code> if everything looks good </li>
 </ol>
-<p>Once the API is created, you can del</p>
+<h3 id="steps-to-create-the-connection-management-dynamodb-table">Steps to create the Connection Management DynamoDB table</h3>
+<ol>
+<li>Navigate to the DynamoDB service on the AWS console and go to the <code>Tables</code> section and click on <code>Create Table</code>. </li>
+<li>Provide the table name <code>connection-manager</code> with <code>connection_id</code> as the partition key</li>
+<li>Select the default settings and click on <code>Create</code></li>
+<li>Create a Global Secondary Index (GSI) by getting inside the specific table in the <code>Tables/Update settings</code> page:</li>
+<li>navigate to the <code>Indexes</code> tab. Click on <code>Create Index</code></li>
+<li>Provide <code>user_id</code> and <code>UserIdIndex</code> as the index name</li>
+<li>Leave the rest of the settings as is and click on <code>Create Index</code></li>
+</ol>
+<h3 id="update-lambda-function-settings">Update Lambda function settings</h3>
+<ol>
+<li>Update the IAM policy:</li>
+</ol>
+<p>Update the <code>event_handler</code> and <code>message_publisher</code> lambda function's permissions to provide access to DynamoDB (for connection management) and API Gateway to publish messages. You can update the lambda function's IAM role's policy to:</p>
+<pre><code class="language-json">{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Action&quot;: [
+                &quot;logs:CreateLogStream&quot;,
+                &quot;logs:CreateLogGroup&quot;
+            ],
+            &quot;Resource&quot;: &quot;*&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;
+        },
+        {
+            &quot;Action&quot;: [
+                &quot;logs:PutLogEvents&quot;
+            ],
+            &quot;Resource&quot;: &quot;*&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;
+        },
+        {
+            &quot;Action&quot;: [
+                &quot;dynamodb:Query&quot;,
+                &quot;dynamodb:GetItem&quot;,
+                &quot;dynamodb:PutItem&quot;,
+                &quot;dynamodb:UpdateItem&quot;,
+                &quot;dynamodb:DeleteItem&quot;
+            ],
+            &quot;Resource&quot;: &quot;*&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;
+        },
+        {
+            &quot;Action&quot;: [
+                &quot;execute-api:ManageConnections&quot;
+            ],
+            &quot;Resource&quot;: [
+                &quot;arn:aws:execute-api:*:*:*/@connections/*&quot;
+            ],
+            &quot;Effect&quot;: &quot;Allow&quot;
+        }
+    ]
+}
+</code></pre>
+<ol>
+<li>Update the environment variables - Create an environment variable <code>WEBSOCKET_DOMAIN</code> for the lambda function and value can be fetched from the WebSocket API created in the above step. Ex: <code>g107cr37nf.execute-api.eu-west-2.amazonaws.com</code></li>
+</ol>
+<h3 id="deploy-using-serverless-framework">Deploy using Serverless Framework</h3>
+<p>If you want to deploy all the resources for the EventBridge segment, please use the following resource:</p>
+<pre><code class="language-commandline">cd WebsocketSetup
+serverless deploy --region eu-west-2
+</code></pre>
+<p>And the above command would create the following services:</p>
+<ol>
+<li>2 lambda functions - <code>event_handler</code> and <code>message_publisher</code></li>
+<li>DynamoDB table to store and maintain connections</li>
+<li>WebSocket API</li>
+</ol>
 
 
 
