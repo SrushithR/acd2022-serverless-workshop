@@ -479,6 +479,53 @@
 <li><code>WEBSOCKET_DOMAIN</code> - the websocket domain created as a part of the WebSockets section</li>
 <li><code>EVENT_BUS_NAME</code> - the name of the event bus created in the above step</li>
 </ol>
+<p>Update the lambda function's IAM role to provide the following permissions by navigating to the IAM console, selecting the specific lambda's role and editing the policy and clicking on <code>Add additional permissions</code> at every following step:</p>
+<ol>
+<li>Select <code>EventBridge</code>, select all actions and all resources. This is to publish messages to the event bus so that other microservices can pick it up and proceed further</li>
+<li>Select <code>DynamoDB</code>, select all actions and all resources. This is to update the DynamoDB table with the appropriate order status</li>
+<li>Select <code>API Gateway</code>, select all actions and all resources. This is used to send WebSocket messages back to the client</li>
+</ol>
+<p>Or, you can simply update the IAM policy with the following JSON:</p>
+<pre><code class="language-json">{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Sid&quot;: &quot;VisualEditor0&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: [
+                &quot;dynamodb:PutItem&quot;,
+                &quot;dynamodb:DeleteItem&quot;,
+                &quot;dynamodb:GetItem&quot;,
+                &quot;dynamodb:Query&quot;,
+                &quot;dynamodb:UpdateItem&quot;
+            ],
+            &quot;Resource&quot;: &quot;*&quot;
+        },
+        {
+            &quot;Sid&quot;: &quot;VisualEditor1&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: [
+                &quot;logs:CreateLogStream&quot;,
+                &quot;execute-api:ManageConnections&quot;,
+                &quot;logs:CreateLogGroup&quot;
+            ],
+            &quot;Resource&quot;: &quot;*&quot;
+        },
+        {
+            &quot;Sid&quot;: &quot;VisualEditor2&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: &quot;logs:PutLogEvents&quot;,
+            &quot;Resource&quot;: &quot;*&quot;
+        },
+        {
+            &quot;Sid&quot;: &quot;VisualEditor3&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: &quot;events:*&quot;,
+            &quot;Resource&quot;: &quot;*&quot;
+        }
+    ]
+}
+</code></pre>
 <h3 id="testing">Testing</h3>
 <p>Navigate to the <code>Event Bus</code> on the left nav bar and click on <code>Send Events</code> and:</p>
 <ol>
@@ -487,7 +534,11 @@
 <li>Add the detail type as <code>order_placed</code></li>
 <li>Add the following event detail:</li>
 </ol>
-<pre><code class="language-json">
+<pre><code class="language-json">{
+  &quot;order_id&quot;: &quot;0ff5e0c8-7c95-49be-ac84-771d47e1d92a&quot;,
+  &quot;order_status&quot;: &quot;order_placed&quot;,
+  &quot;user_id&quot;: &quot;68a0f215-8453-45be-a418-5b0b1c94b456&quot;
+}
 </code></pre>
 
 
