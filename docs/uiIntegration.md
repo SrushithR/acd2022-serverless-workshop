@@ -9,11 +9,11 @@ After completing the API endpoints and the Cognito part on the backend, follow t
 
 ### API and Cognito integration in the UI
 
-- Go to *axios.config.js* in the src folder -> replace the API and socket *base url* with your *end point* from the API segment
+- Go to *axios.config.js* in the src folder, replace the API and socket *base url* with your *end point* from the API segment
 - Go to *UserPool.js* file in the src folder, replace the client_id and UserPoolId with yours from the Cognito segment
 - `npm run build` on your terminal - It will optimize, compile, and dump the static files required to serve your application in a build directory. 
 
-# Deploy to S3
+## Deploy to S3
 
 The application uses S3 bucket to deploy the web application. Deploying static files requires far fewer moving parts than an app with a server. There’s less to set up and less to maintain. Because there’s less to set up and maintain, the cost of deploying a static application can be dramatically cheaper.
 
@@ -22,12 +22,8 @@ The application uses S3 bucket to deploy the web application. Deploying static f
 - Create an account or sign in to the [AWS Console](https://aws.amazon.com/)
 - Navigate to the S3 service and click on __Create Bucket__. Make up a clever name for your new bucket. In the Set Permissions step, deselect the options to block public access — we want users to access the website assets that will live here.
 
-![Public access](/site/assets/images/public-access.jpg)
-
 - Then go ahead and create the bucket.
 - Click on the newly-created bucket. Within the Properties, open the Static Website Hosting tab, and select *Use this bucket to host a static website* - fill in index.html for both the Index and Error Documents. By setting index.html as the Error Document, we can allow something like react-router to handle routes outside of the root.
-
-![Hosting](/site/assets/images/hosting.jpg)
 
 - Open the Permissions tab, then select Bucket Policy. You may choose to do something more nuanced here, but a good starting point is to provide read-only permissions for anonymous users — a policy provided in the AWS examples. 
 
@@ -89,7 +85,7 @@ aws s3 sync build/ s3://your-bucket-name`
 
 The deploy script above is as simple as it gets. It takes the contents of the build directory (produced by npm run build) and replaces whatever is currently in your bucket with those contents.
 
-# Deploy to CloudFront
+## Deploy to CloudFront
 
 If it works on S3, why bother with CloudFront?
 
