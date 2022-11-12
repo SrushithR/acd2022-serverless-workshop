@@ -239,7 +239,28 @@
         
           <li class="md-nav__item">
   <a href="#steps-to-create-an-event-bus" class="md-nav__link">
-    Steps to create an Event bus
+    Steps to create an Event Bus
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps-to-create-event-rules" class="md-nav__link">
+    Steps to create Event Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-lambda-function-config" class="md-nav__link">
+    Update Lambda Function Config
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    Testing
   </a>
   
 </li>
@@ -336,7 +357,28 @@
         
           <li class="md-nav__item">
   <a href="#steps-to-create-an-event-bus" class="md-nav__link">
-    Steps to create an Event bus
+    Steps to create an Event Bus
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps-to-create-event-rules" class="md-nav__link">
+    Steps to create Event Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-lambda-function-config" class="md-nav__link">
+    Update Lambda Function Config
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    Testing
   </a>
   
 </li>
@@ -364,13 +406,81 @@
   <h1>EventBridge</h1>
 
 <h2 id="setting-up-eventbridge">Setting up EventBridge</h2>
-<p>EventBridge has become an integral part of Serverless applications. In this section we will see how to create Event bus, Event Rules and integrate them with the lambda functions</p>
-<h3 id="steps-to-create-an-event-bus">Steps to create an Event bus</h3>
+<p>EventBridge has become an integral part of Serverless applications. In this section we will see how to create Event bus, Event Rules and integrate them with the following microservices:</p>
+<ol>
+<li><a href="../EventBridgeSetup/restaurants.py"><code>restaurants_service</code></a> - this microservice simulates the functionality of a restaurant, accepts orders and publishes a message (<code>Order Accepted</code>) to the event bus, which will be picked up the delivery and notification microservices</li>
+<li><a href="../EventBridgeSetup/delivery.py"><code>delivery service</code></a> - this microservice simulates the functionality of delivering the order to the customer's location, and publishes a message (<code>Order Delivered</code>) to the event bus, which will be picked up the notification microservice</li>
+<li><a href="../EventBridgeSetup/notifications.py"><code>notifications_service</code></a> - this microservice will help in sending WebSocket messages to the client using the API Gateway client of <code>boto3</code></li>
+</ol>
+<p>Create the above 3 lambda functions, which will be integrated with event rules in the following steps</p>
+<h3 id="steps-to-create-an-event-bus">Steps to create an Event Bus</h3>
 <p>Navigate to the <code>EventBridge</code> service on the AWS console and perform the following steps to create an event bus:</p>
 <ol>
 <li>Select <code>Event buses</code> on the left nav bar</li>
-<li></li>
+<li>Click on <code>Create event bus</code> to create a new event bus and provide a name for the same. Ex <code>food-app-bus</code> and leave the defaults for the rest of the things</li>
 </ol>
+<h3 id="steps-to-create-event-rules">Steps to create Event Rules</h3>
+<p>As a part of our application, we will be creating 3 rules:
+1. <code>OrderPlacedRule</code> - this rule will trigger the <code>restaurants</code> microservice to notify the restaurant that an order has been placed and the restaurant needs to accept and process the same.
+2. <code>OrderAcceptedRule</code> - this rule will trigger the <code>delivery</code> microservice to start the delivery partner assignment and the delivery process. It will also trigger the <code>notifications</code> microservice to deliver the <code>Order Accepted</code> message to the client
+3. <code>OrderDeliveredRule</code> - this rule will trigger the <code>notifications</code> microservice to delivery <code>Order Delivered</code> message to the client</p>
+<p>Navigate to the <code>Event Rules</code> section on the left nav bar of the <code>EventBridge</code> console and perform the following steps to create event rules:</p>
+<p>Select the event bus that was created in the previous section and click on <code>Create Rule</code> to create the following rules:
+   1. Step 1 (Define rule detail) - Provide a name for the rule, <code>order_placed</code> and click on <code>Next</code>
+   2. Step 2 (Build event pattern):
+      1. Select <code>Other</code> as the <code>Event Source</code> to indicate that custom events will be used to push messages to the bus
+      2. Add the following JSON to the <code>Event Pattern</code> section and click on <code>Next</code>:
+         <code>json
+         {
+           "detail-type": ["order_placed"],
+           "source": ["custom.food_app"]
+         }</code>
+   3. Step 3 (Select Targets):
+      1. Select <code>AWS service</code> as the target and chose <code>Lambda function</code> from the dropdown list
+      2. Select the <code>restaurants_service</code> lambda function that was created above and click on <code>Next</code>
+   4. Step 4 (Configure Tags) - you can provide any tags if needed or can skip and click on <code>Next</code>
+   5. Step 5 (Review and Create) - review all the configurations created in the previous steps and click on <code>Create Rule</code></p>
+<p>Repeat the above steps to create 2 more rules:</p>
+<p><code>Order Accepted Rule</code> with the following config:</p>
+<ol>
+<li><code>Event Pattern</code>:</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;detail-type&quot;: [&quot;order_accepted&quot;],
+  &quot;source&quot;: [&quot;custom.food_app&quot;]
+}
+</code></pre>
+<ol>
+<li>Two target lambda functions - <code>delivery_service</code> and <code>notification_service</code></li>
+</ol>
+<p><code>Order Delivered Rule</code> with the following config:</p>
+<ol>
+<li><code>Event Pattern</code>:</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;detail-type&quot;: [&quot;order_delivered&quot;],
+  &quot;source&quot;: [&quot;custom.food_app&quot;]
+}
+</code></pre>
+<ol>
+<li>Target lambda - <code>notifications_service</code></li>
+</ol>
+<h3 id="update-lambda-function-config">Update Lambda Function Config</h3>
+<p>Create the following 2 environment variables in the <code>Configuration</code> section:</p>
+<ol>
+<li><code>WEBSOCKET_DOMAIN</code> - the websocket domain created as a part of the WebSockets section</li>
+<li><code>EVENT_BUS_NAME</code> - the name of the event bus created in the above step</li>
+</ol>
+<h3 id="testing">Testing</h3>
+<p>Navigate to the <code>Event Bus</code> on the left nav bar and click on <code>Send Events</code> and:</p>
+<ol>
+<li>Select the event bus created above</li>
+<li>Add the event source - <code>custom.food_app</code></li>
+<li>Add the detail type as <code>order_placed</code></li>
+<li>Add the following event detail:</li>
+</ol>
+<pre><code class="language-json">
+</code></pre>
 
 
 

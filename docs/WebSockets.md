@@ -4,8 +4,6 @@ The application leverages WebSockets to create a tunnel between the UI/Client an
 
 ### Architecture Details
 
-TODO: add diagram
-
 The notification service leverages the following AWS services:
 
 1. Amazon APIGateway’s WebSocket API
