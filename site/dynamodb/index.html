@@ -288,7 +288,15 @@
 
   <h1>Dynamodb</h1>
 
-<p>/b jfjkhfjk</p>
+<ol>
+<li>Upload data file <a href="../DynamoDBSetup/foodorder.json"><code>foodorder.json</code></a> to S3 bucket (e.g. imagesforwebsite) present in acd2022-serverless-workshop/DynamoDBSetup/</li>
+<li>Now, to create a new table including the data in step-1, go the Dynamo DB Dashboard and choose "imports from S3"</li>
+<li>Provide the URI of file in Source: s3://imagesforwebsite/foodorder.json</li>
+<li>Provide Table name as: <code>foodorder</code></li>
+<li>Define Partition Key: ID</li>
+<li>Define Sort Key: Type</li>
+<li>Create table using Default settings</li>
+</ol>
 
 
 

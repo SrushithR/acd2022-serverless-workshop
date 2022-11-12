@@ -292,6 +292,53 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#deploy-to-s3" class="md-nav__link">
+    Deploy to S3
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy to S3">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-new-s3-bucket" class="md-nav__link">
+    Create a new S3 bucket
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bonus-deploying-with-aws-cli" class="md-nav__link">
+    Bonus: Deploying with AWS CLI
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy-to-cloudfront" class="md-nav__link">
+    Deploy to CloudFront
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy to CloudFront">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#follow-the-steps-below" class="md-nav__link">
+    Follow the steps below
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -340,6 +387,53 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#deploy-to-s3" class="md-nav__link">
+    Deploy to S3
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy to S3">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-new-s3-bucket" class="md-nav__link">
+    Create a new S3 bucket
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bonus-deploying-with-aws-cli" class="md-nav__link">
+    Bonus: Deploying with AWS CLI
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy-to-cloudfront" class="md-nav__link">
+    Deploy to CloudFront
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy to CloudFront">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#follow-the-steps-below" class="md-nav__link">
+    Follow the steps below
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -365,25 +459,27 @@
 </ul>
 <h3 id="api-and-cognito-integration-in-the-ui">API and Cognito integration in the UI</h3>
 <ul>
-<li>Go to <em>axios.config.js</em> in the src folder -&gt; replace the API and socket <em>base url</em> with your <em>end point</em> from the API segment</li>
+<li>Go to <em>axios.config.js</em> in the src folder, replace the API and socket <em>base url</em> with your <em>end point</em> from the API segment</li>
 <li>Go to <em>UserPool.js</em> file in the src folder, replace the client_id and UserPoolId with yours from the Cognito segment</li>
 <li><code>npm run build</code> on your terminal - It will optimize, compile, and dump the static files required to serve your application in a build directory. </li>
 </ul>
-<h1 id="deploy-to-s3">Deploy to S3</h1>
+<h2 id="deploy-to-s3">Deploy to S3</h2>
 <p>The application uses S3 bucket to deploy the web application. Deploying static files requires far fewer moving parts than an app with a server. There’s less to set up and less to maintain. Because there’s less to set up and maintain, the cost of deploying a static application can be dramatically cheaper.</p>
 <h3 id="create-a-new-s3-bucket">Create a new S3 bucket</h3>
 <ul>
 <li>Create an account or sign in to the <a href="https://aws.amazon.com/">AWS Console</a></li>
-<li>Navigate to the S3 service and click on <strong>Create Bucket</strong>. Make up a clever name for your new bucket. In the Set Permissions step, deselect the options to block public access — we want users to access the website assets that will live here.</li>
-</ul>
-<p><img alt="Public access" src="/site/assets/images/public-access.jpg" /></p>
-<ul>
-<li>Then go ahead and create the bucket.</li>
-<li>Click on the newly-created bucket. Within the Properties, open the Static Website Hosting tab, and select <em>Use this bucket to host a static website</em> - fill in index.html for both the Index and Error Documents. By setting index.html as the Error Document, we can allow something like react-router to handle routes outside of the root.</li>
-</ul>
-<p><img alt="Hosting" src="/site/assets/images/hosting.jpg" /></p>
-<ul>
-<li>Open the Permissions tab, then select Bucket Policy. You may choose to do something more nuanced here, but a good starting point is to provide read-only permissions for anonymous users — a policy provided in the AWS examples. </li>
+<li>
+<p>Navigate to the S3 service and click on <strong>Create Bucket</strong>. Make up a clever name for your new bucket. In the Set Permissions step, deselect the options to block public access — we want users to access the website assets that will live here.</p>
+</li>
+<li>
+<p>Then go ahead and create the bucket.</p>
+</li>
+<li>
+<p>Click on the newly-created bucket. Within the Properties, open the Static Website Hosting tab, and select <em>Use this bucket to host a static website</em> - fill in index.html for both the Index and Error Documents. By setting index.html as the Error Document, we can allow something like react-router to handle routes outside of the root.</p>
+</li>
+<li>
+<p>Open the Permissions tab, then select Bucket Policy. You may choose to do something more nuanced here, but a good starting point is to provide read-only permissions for anonymous users — a policy provided in the AWS examples. </p>
+</li>
 </ul>
 <p>Note - Make sure its your bucket name under the <em>Resource</em> key.</p>
 <pre><code>{
@@ -435,7 +531,7 @@ npm run build &amp;&amp; aws s3 sync build/ s3://your-bucket-name
 aws s3 sync build/ s3://your-bucket-name`
 </code></pre>
 <p>The deploy script above is as simple as it gets. It takes the contents of the build directory (produced by npm run build) and replaces whatever is currently in your bucket with those contents.</p>
-<h1 id="deploy-to-cloudfront">Deploy to CloudFront</h1>
+<h2 id="deploy-to-cloudfront">Deploy to CloudFront</h2>
 <p>If it works on S3, why bother with CloudFront?</p>
 <p>CloudFront is the Content Delivery Network (CDN) service offered by AWS. CDNs optimize for speed by pushing your content out to edge locations, making it highly available around the globe. If your users are only local, the performance offered by S3 may be just fine.</p>
 <h3 id="follow-the-steps-below">Follow the steps below</h3>
