@@ -18,6 +18,7 @@ Navigate to the `EventBridge` service on the AWS console and perform the followi
 ### Steps to create Event Rules
 
 As a part of our application, we will be creating 3 rules:
+
 1. `OrderPlacedRule` - this rule will trigger the `restaurants` microservice to notify the restaurant that an order has been placed and the restaurant needs to accept and process the same.
 2. `OrderAcceptedRule` - this rule will trigger the `delivery` microservice to start the delivery partner assignment and the delivery process. It will also trigger the `notifications` microservice to deliver the `Order Accepted` message to the client
 3. `OrderDeliveredRule` - this rule will trigger the `notifications` microservice to delivery `Order Delivered` message to the client
@@ -25,6 +26,7 @@ As a part of our application, we will be creating 3 rules:
 Navigate to the `Event Rules` section on the left nav bar of the `EventBridge` console and perform the following steps to create event rules:
 
 Select the event bus that was created in the previous section and click on `Create Rule` to create the following rules:
+
    1. Step 1 (Define rule detail) - Provide a name for the rule, `order_placed` and click on `Next`
    2. Step 2 (Build event pattern):
       1. Select `Other` as the `Event Source` to indicate that custom events will be used to push messages to the bus

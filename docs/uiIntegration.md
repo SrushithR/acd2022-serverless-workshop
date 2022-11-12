@@ -1,4 +1,4 @@
-# UI integration
+# UI Integration
 
 After completing the API endpoints and the Cognito part on the backend, follow the steps for the integration in the UI - 
 
