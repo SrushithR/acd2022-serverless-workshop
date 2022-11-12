@@ -4,6 +4,8 @@ The application leverages WebSockets to create a tunnel between the UI/Client an
 
 ### Architecture Details
 
+TODO: add diagram
+
 The notification service leverages the following AWS services:
 
 1. Amazon APIGateway’s WebSocket API
@@ -48,6 +50,7 @@ The publisher lambda does the following:
 2. send the message using the AWS SDK for API Gateway, which leverages the `connection_id` and automatically sends the message
 
 ### Factors to consider while using WebSockets
+
 1. Cost - Websockets have a few factors considered for the pricing:
    1. We are charged for every minute a connection is kept alive
    2. The number of messages sent in the connection
@@ -57,7 +60,14 @@ The publisher lambda does the following:
    3. Idle Connection Timeout - 10 minutes
    4. Connection duration for WebSocket API	- 2 hours
 
-### Steps to Create a WebSocket API
+### Steps to create the Notifications service
+
+The notifications service will be composed of 2 lambda functions:
+1. [`event_handler`](../WebsocketSetup/src/event_handler.py) - this lambda function is responsible for handling the connections - creating and deleting them from the `connection-management` DynamoDB table
+2. [`message_publisher`](../WebsocketSetup/src/message_publisher.py) - this lambda function is responsible for sending messages to the client using the `connection_id` by leveraging the API 
+
+
+### Steps to create a WebSocket API
 
 Navigate to the API Gateway service on the AWS console and click on `Create API`, select `Build` under the `WebSocket API` section and provide the following details in each section:
 
