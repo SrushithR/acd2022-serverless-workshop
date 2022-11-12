@@ -317,7 +317,7 @@
   
     <li class="md-nav__item">
       <a href="../uiIntegration/" class="md-nav__link">
-        UI integration
+        UI Integration
       </a>
     </li>
   
@@ -420,26 +420,34 @@
 <li>Click on <code>Create event bus</code> to create a new event bus and provide a name for the same. Ex <code>food-app-bus</code> and leave the defaults for the rest of the things</li>
 </ol>
 <h3 id="steps-to-create-event-rules">Steps to create Event Rules</h3>
-<p>As a part of our application, we will be creating 3 rules:
-1. <code>OrderPlacedRule</code> - this rule will trigger the <code>restaurants</code> microservice to notify the restaurant that an order has been placed and the restaurant needs to accept and process the same.
-2. <code>OrderAcceptedRule</code> - this rule will trigger the <code>delivery</code> microservice to start the delivery partner assignment and the delivery process. It will also trigger the <code>notifications</code> microservice to deliver the <code>Order Accepted</code> message to the client
-3. <code>OrderDeliveredRule</code> - this rule will trigger the <code>notifications</code> microservice to delivery <code>Order Delivered</code> message to the client</p>
+<p>As a part of our application, we will be creating 3 rules:</p>
+<ol>
+<li><code>OrderPlacedRule</code> - this rule will trigger the <code>restaurants</code> microservice to notify the restaurant that an order has been placed and the restaurant needs to accept and process the same.</li>
+<li><code>OrderAcceptedRule</code> - this rule will trigger the <code>delivery</code> microservice to start the delivery partner assignment and the delivery process. It will also trigger the <code>notifications</code> microservice to deliver the <code>Order Accepted</code> message to the client</li>
+<li><code>OrderDeliveredRule</code> - this rule will trigger the <code>notifications</code> microservice to delivery <code>Order Delivered</code> message to the client</li>
+</ol>
 <p>Navigate to the <code>Event Rules</code> section on the left nav bar of the <code>EventBridge</code> console and perform the following steps to create event rules:</p>
-<p>Select the event bus that was created in the previous section and click on <code>Create Rule</code> to create the following rules:
-   1. Step 1 (Define rule detail) - Provide a name for the rule, <code>order_placed</code> and click on <code>Next</code>
-   2. Step 2 (Build event pattern):
-      1. Select <code>Other</code> as the <code>Event Source</code> to indicate that custom events will be used to push messages to the bus
-      2. Add the following JSON to the <code>Event Pattern</code> section and click on <code>Next</code>:
-         <code>json
-         {
-           "detail-type": ["order_placed"],
-           "source": ["custom.food_app"]
-         }</code>
-   3. Step 3 (Select Targets):
-      1. Select <code>AWS service</code> as the target and chose <code>Lambda function</code> from the dropdown list
-      2. Select the <code>restaurants_service</code> lambda function that was created above and click on <code>Next</code>
-   4. Step 4 (Configure Tags) - you can provide any tags if needed or can skip and click on <code>Next</code>
-   5. Step 5 (Review and Create) - review all the configurations created in the previous steps and click on <code>Create Rule</code></p>
+<p>Select the event bus that was created in the previous section and click on <code>Create Rule</code> to create the following rules:</p>
+<ol>
+<li>Step 1 (Define rule detail) - Provide a name for the rule, <code>order_placed</code> and click on <code>Next</code></li>
+<li>Step 2 (Build event pattern):<ol>
+<li>Select <code>Other</code> as the <code>Event Source</code> to indicate that custom events will be used to push messages to the bus</li>
+<li>Add the following JSON to the <code>Event Pattern</code> section and click on <code>Next</code>:
+     <code>json
+     {
+       "detail-type": ["order_placed"],
+       "source": ["custom.food_app"]
+     }</code></li>
+</ol>
+</li>
+<li>Step 3 (Select Targets):<ol>
+<li>Select <code>AWS service</code> as the target and chose <code>Lambda function</code> from the dropdown list</li>
+<li>Select the <code>restaurants_service</code> lambda function that was created above and click on <code>Next</code></li>
+</ol>
+</li>
+<li>Step 4 (Configure Tags) - you can provide any tags if needed or can skip and click on <code>Next</code></li>
+<li>Step 5 (Review and Create) - review all the configurations created in the previous steps and click on <code>Create Rule</code></li>
+</ol>
 <p>Repeat the above steps to create 2 more rules:</p>
 <p><code>Order Accepted Rule</code> with the following config:</p>
 <ol>
