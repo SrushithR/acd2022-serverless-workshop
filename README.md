@@ -10,3 +10,5 @@ also provide facilities for users to register with the service and log in before
 <img width="1022" alt="Screenshot 2022-11-12 at 8 50 38 AM" src="https://user-images.githubusercontent.com/23396903/201454098-f95098e5-22a7-4453-af58-7e21a5e2aaeb.png">
 
 Lab steps/Documentation link - [https://srushithr.github.io/acd2022-serverless-workshop/](https://srushithr.github.io/acd2022-serverless-workshop/)
+
+Here is the link to the presentation - [https://docs.google.com/presentation/d/19GNSGKPDX4rq1sOxp4P6fLkW9mBJ744N/edit?usp=sharing&ouid=113599818258897157842&rtpof=true&sd=true](https://docs.google.com/presentation/d/19GNSGKPDX4rq1sOxp4P6fLkW9mBJ744N/edit?usp=sharing&ouid=113599818258897157842&rtpof=true&sd=true)
