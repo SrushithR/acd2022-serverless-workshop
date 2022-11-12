@@ -265,6 +265,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#deploy-using-serverless-framework" class="md-nav__link">
+    Deploy using Serverless Framework
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -379,6 +386,13 @@
           <li class="md-nav__item">
   <a href="#testing" class="md-nav__link">
     Testing
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-using-serverless-framework" class="md-nav__link">
+    Deploy using Serverless Framework
   </a>
   
 </li>
@@ -540,6 +554,18 @@
   &quot;user_id&quot;: &quot;68a0f215-8453-45be-a418-5b0b1c94b456&quot;
 }
 </code></pre>
+<h3 id="deploy-using-serverless-framework">Deploy using Serverless Framework</h3>
+<p>If you want to deploy all the resources for the EventBridge segment, please use the following resource:</p>
+<pre><code class="language-commandline">cd EventBridgeSetup
+serverless deploy --region eu-west-2
+</code></pre>
+<p>And the above command would create the following services:</p>
+<ol>
+<li>4 lambda functions to simulate 4 microservices - orders, restaurants, delivery, notifications</li>
+<li>Event bus</li>
+<li>3 Event rules</li>
+<li>Permission for EventBridge to trigger the targets</li>
+</ol>
 
 
 
