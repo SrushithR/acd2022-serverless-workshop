@@ -13,7 +13,7 @@
     
     
       
-        <title>Dynamodb - ACD 2022 Serverless Workshop</title>
+        <title>UI integration - ACD 2022 Serverless Workshop</title>
       
     
     
@@ -65,6 +65,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#ui-integration" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -94,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Dynamodb
+              UI integration
             
           </span>
         </div>
@@ -223,19 +228,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../dynamodb/" class="md-nav__link">
         Dynamodb
       </a>
-      
     </li>
   
 
@@ -246,11 +243,59 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../uiIntegration/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          UI integration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         UI integration
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-the-ui-code-base" class="md-nav__link">
+    Setting up the UI Code base
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-and-cognito-integration-in-the-ui" class="md-nav__link">
+    API and Cognito integration in the UI
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -272,6 +317,30 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-the-ui-code-base" class="md-nav__link">
+    Setting up the UI Code base
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-and-cognito-integration-in-the-ui" class="md-nav__link">
+    API and Cognito integration in the UI
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -286,9 +355,109 @@
                   
 
 
-  <h1>Dynamodb</h1>
+<h1 id="ui-integration">UI integration</h1>
+<p>After completing the API endpoints and the Cognito part on the backend, follow the steps for the integration in the UI - </p>
+<h3 id="setting-up-the-ui-code-base">Setting up the UI Code base</h3>
+<ul>
+<li>Navigate to GitHub and <a href="https://github.com/rashmisubhash/fooed-delivery-app">clone the repository</a> </li>
+<li>Open the project in your code editor and a new terminal</li>
+<li><code>npm install</code> (installs all the node modules)</li>
+</ul>
+<h3 id="api-and-cognito-integration-in-the-ui">API and Cognito integration in the UI</h3>
+<ul>
+<li>Go to <em>axios.config.js</em> in the src folder -&gt; replace the API and socket <em>base url</em> with your <em>end point</em> from the API segment</li>
+<li>Go to <em>UserPool.js</em> file in the src folder, replace the client_id and UserPoolId with yours from the Cognito segment</li>
+<li><code>npm run build</code> on your terminal - It will optimize, compile, and dump the static files required to serve your application in a build directory. </li>
+</ul>
+<h1 id="deploy-to-s3">Deploy to S3</h1>
+<p>The application uses S3 bucket to deploy the web application. Deploying static files requires far fewer moving parts than an app with a server. There’s less to set up and less to maintain. Because there’s less to set up and maintain, the cost of deploying a static application can be dramatically cheaper.</p>
+<h3 id="create-a-new-s3-bucket">Create a new S3 bucket</h3>
+<ul>
+<li>Create an account or sign in to the <a href="https://aws.amazon.com/">AWS Console</a></li>
+<li>Navigate to the S3 service and click on <strong>Create Bucket</strong>. Make up a clever name for your new bucket. In the Set Permissions step, deselect the options to block public access — we want users to access the website assets that will live here.</li>
+</ul>
+<p><img alt="Public access" src="/site/assets/images/public-access.jpg" /></p>
+<ul>
+<li>Then go ahead and create the bucket.</li>
+<li>Click on the newly-created bucket. Within the Properties, open the Static Website Hosting tab, and select <em>Use this bucket to host a static website</em> - fill in index.html for both the Index and Error Documents. By setting index.html as the Error Document, we can allow something like react-router to handle routes outside of the root.</li>
+</ul>
+<p><img alt="Hosting" src="/site/assets/images/hosting.jpg" /></p>
+<ul>
+<li>Open the Permissions tab, then select Bucket Policy. You may choose to do something more nuanced here, but a good starting point is to provide read-only permissions for anonymous users — a policy provided in the AWS examples. </li>
+</ul>
+<p>Note - Make sure its your bucket name under the <em>Resource</em> key.</p>
+<pre><code>{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Principal&quot;: &quot;*&quot;,
+            &quot;Action&quot;: &quot;s3:GetObject&quot;,
+            &quot;Resource&quot;: &quot;arn:aws:s3:::your-bucket-name/*&quot;
+        },
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Principal&quot;: &quot;*&quot;,
+            &quot;Action&quot;: &quot;s3:PutObject&quot;,
+            &quot;Resource&quot;: &quot;arn:aws:s3:::your-bucket-name/*&quot;
+        },
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Principal&quot;: &quot;*&quot;,
+            &quot;Action&quot;: &quot;s3:ListBucket&quot;,
+            &quot;Resource&quot;: &quot;arn:aws:s3:::your-bucket-name&quot;
+        }
+    ]
+}
+</code></pre>
+<ul>
+<li>Add the contents of your build directory to this bucket. This can be done by clicking on the bucket and clicking Upload. That’s it! You can find the URL to your application back under the Static Website Hosting tab, labeled Endpoint.</li>
+</ul>
+<h3 id="bonus-deploying-with-aws-cli">Bonus: Deploying with AWS CLI</h3>
+<p>You can streamline the deployment process with the AWS Command Line Interface. For example, you might write an npm script to run tests, build the application and push to your S3 bucket. Briefly:</p>
+<ul>
+<li>Create a user with security credentials in IAM. Avoid providing more permissions than is necessary.</li>
+<li>Configure the CLI with aws configure. For example:</li>
+</ul>
+<pre><code>AWS Access Key ID [None]: Your Access key
+AWS Secret Access Key [None]: Your Secret Access key
+Default region name [None]: us-west-2
+Default output format [None]: json
+</code></pre>
+<ul>
+<li>Deploy your app with the following command (using the bucket name)</li>
+</ul>
+<p><strong>Note</strong> - If any changes are present in your local branch, build your app before you deploy, if not directly deploy it. </p>
+<pre><code>// build and deploy the app
+npm run build &amp;&amp; aws s3 sync build/ s3://your-bucket-name
 
-<p>/b jfjkhfjk</p>
+// deploy the app
+aws s3 sync build/ s3://your-bucket-name`
+</code></pre>
+<p>The deploy script above is as simple as it gets. It takes the contents of the build directory (produced by npm run build) and replaces whatever is currently in your bucket with those contents.</p>
+<h1 id="deploy-to-cloudfront">Deploy to CloudFront</h1>
+<p>If it works on S3, why bother with CloudFront?</p>
+<p>CloudFront is the Content Delivery Network (CDN) service offered by AWS. CDNs optimize for speed by pushing your content out to edge locations, making it highly available around the globe. If your users are only local, the performance offered by S3 may be just fine.</p>
+<h3 id="follow-the-steps-below">Follow the steps below</h3>
+<ul>
+<li>
+<p>Select theCloudFront service in the AWS console, click Create Distribution, then under the web delivery method, click Get Started.</p>
+</li>
+<li>
+<p>Select your Origin Settings. The Origin Domain Name choices pre-populate with S3 buckets. Selecting yours will also populate the Origin ID.</p>
+</li>
+<li>
+<p>Set the Default Root Object to index.html</p>
+</li>
+<li>
+<p>Click on <strong>Create Distribution</strong></p>
+</li>
+<li>
+<p>Click the ID of your newly created distribution to reach its settings page, then click on the Error Pages tab. Select Create Custom Error Response.</p>
+</li>
+<li>Select Yes for a custom error response, set/index.html for the response page path and 200: OK for the response code. This custom error page in the CloudFront distribution is analogous to the Error Document on the S3 bucket (and will work on IE, too). When done, click Create.</li>
+</ul>
+<p>That’s it! Give the deployment a handful of minutes, then check out your web app. You can find the URL on the distribution listings page, under the Domain Name column.</p>
 
 
 
@@ -309,7 +478,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../WebSockets/" class="md-footer__link md-footer__link--prev" aria-label="Previous: WebSockets" rel="prev">
+        <a href="../dynamodb/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Dynamodb" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -318,26 +487,11 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              WebSockets
+              Dynamodb
             </div>
           </div>
         </a>
       
-      
-        
-        <a href="../uiIntegration/" class="md-footer__link md-footer__link--next" aria-label="Next: UI integration" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              UI integration
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
       
     </nav>
   
