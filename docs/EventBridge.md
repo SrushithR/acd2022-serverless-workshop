@@ -77,6 +77,56 @@ Create the following 2 environment variables in the `Configuration` section:
 1. `WEBSOCKET_DOMAIN` - the websocket domain created as a part of the WebSockets section
 2. `EVENT_BUS_NAME` - the name of the event bus created in the above step
 
+Update the lambda function's IAM role to provide the following permissions by navigating to the IAM console, selecting the specific lambda's role and editing the policy and clicking on `Add additional permissions` at every following step:
+
+1. Select `EventBridge`, select all actions and all resources. This is to publish messages to the event bus so that other microservices can pick it up and proceed further
+2. Select `DynamoDB`, select all actions and all resources. This is to update the DynamoDB table with the appropriate order status
+3. Select `API Gateway`, select all actions and all resources. This is used to send WebSocket messages back to the client
+
+Or, you can simply update the IAM policy with the following JSON:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:PutItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:GetItem",
+                "dynamodb:Query",
+                "dynamodb:UpdateItem"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogStream",
+                "execute-api:ManageConnections",
+                "logs:CreateLogGroup"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": "logs:PutLogEvents",
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor3",
+            "Effect": "Allow",
+            "Action": "events:*",
+            "Resource": "*"
+        }
+    ]
+}
+```
+
 ### Testing
 
 Navigate to the `Event Bus` on the left nav bar and click on `Send Events` and:
@@ -87,5 +137,9 @@ Navigate to the `Event Bus` on the left nav bar and click on `Send Events` and:
 4. Add the following event detail:
 
 ```json
-
+{
+  "order_id": "0ff5e0c8-7c95-49be-ac84-771d47e1d92a",
+  "order_status": "order_placed",
+  "user_id": "68a0f215-8453-45be-a418-5b0b1c94b456"
+}
 ```
