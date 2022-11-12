@@ -1,0 +1,584 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
+    
+    
+      
+        <title>WebSockets - ACD 2022 Serverless Workshop</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#ffa724">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="orange" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#real-time-communication-using-websockets" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ACD 2022 Serverless Workshop" class="md-header__button md-logo" aria-label="ACD 2022 Serverless Workshop" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ACD 2022 Serverless Workshop
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              WebSockets
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ACD 2022 Serverless Workshop" class="md-nav__button md-logo" aria-label="ACD 2022 Serverless Workshop" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    ACD 2022 Serverless Workshop
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Build your own Serverless Food Delivery App in 3 hours!
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../EventBridge/" class="md-nav__link">
+        EventBridge
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          WebSockets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        WebSockets
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#real-time-communication-using-websockets" class="md-nav__link">
+    Real Time Communication Using WebSockets
+  </a>
+  
+    <nav class="md-nav" aria-label="Real Time Communication Using WebSockets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architecture-details" class="md-nav__link">
+    Architecture Details
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understanding-notifications-service" class="md-nav__link">
+    Understanding Notifications Service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-management" class="md-nav__link">
+    Connection Management
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-messages-to-the-client" class="md-nav__link">
+    Sending messages to the client
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#factors-to-consider-while-using-websockets" class="md-nav__link">
+    Factors to consider while using WebSockets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps-to-create-the-notifications-service" class="md-nav__link">
+    Steps to create the Notifications service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps-to-create-a-websocket-api" class="md-nav__link">
+    Steps to create a WebSocket API
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dynamodb/" class="md-nav__link">
+        Dynamodb
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#real-time-communication-using-websockets" class="md-nav__link">
+    Real Time Communication Using WebSockets
+  </a>
+  
+    <nav class="md-nav" aria-label="Real Time Communication Using WebSockets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architecture-details" class="md-nav__link">
+    Architecture Details
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understanding-notifications-service" class="md-nav__link">
+    Understanding Notifications Service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-management" class="md-nav__link">
+    Connection Management
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-messages-to-the-client" class="md-nav__link">
+    Sending messages to the client
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#factors-to-consider-while-using-websockets" class="md-nav__link">
+    Factors to consider while using WebSockets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps-to-create-the-notifications-service" class="md-nav__link">
+    Steps to create the Notifications service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps-to-create-a-websocket-api" class="md-nav__link">
+    Steps to create a WebSocket API
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>WebSockets</h1>
+
+<h2 id="real-time-communication-using-websockets">Real Time Communication Using WebSockets</h2>
+<p>The application leverages WebSockets to create a tunnel between the UI/Client and the backend, using which messages can be transmitted by both parties, to both parties. This eliminates the need to refresh a page every time an update is received to the backend.</p>
+<h3 id="architecture-details">Architecture Details</h3>
+<p>TODO: add diagram</p>
+<p>The notification service leverages the following AWS services:</p>
+<ol>
+<li>Amazon APIGateway’s WebSocket API</li>
+<li>Lambda functions for connection management and message publishing</li>
+<li>DynamoDB to store &amp; maintain all connections. The table has the following index configuration:</li>
+<li><code>connection_id</code> as the partition key</li>
+<li><code>UserIdIndex</code> as the Global Secondary Index with <code>user_id</code> as the partition key. This index is used to fetch the list of connections for a particular <code>user_id</code></li>
+</ol>
+<h3 id="understanding-notifications-service">Understanding Notifications Service</h3>
+<p>The notifications service consists of 2 parts:</p>
+<ol>
+<li>Connection management</li>
+<li>Publishing messages to the interested connections</li>
+</ol>
+<p>We can create routes for a WebSocket API (synonymous with API routes in REST API) and the RTC handler has the following routes:</p>
+<ol>
+<li>$connect - This route is called when the client is requesting to connect with the backend. The <code>user_id</code> is passed as a query param to be stored in the connection management DynamoDB table</li>
+<li>$disconnect - This route is called when the client disconnects from the backend. This is also called when the user navigates to a different page other than the scheduling page or when the tab is closed</li>
+<li>$default - This is the default route, called when the request is for a route that is not configured</li>
+</ol>
+<h3 id="connection-management">Connection Management</h3>
+<p>The client calls the WebSocket API with the <code>$connect</code> route and with the user_id passed in the query param. API Gateway will call the RTC Handler lambda with the <code>$connect</code> route with the <code>connection_id</code>. </p>
+<p>The lambda function stores the following information in DynamoDB:</p>
+<pre><code class="language-json">{
+  &quot;connection_id&quot;: &quot;M9aA1e3uvHcCH1A=&quot;,
+  &quot;user_id&quot;: &quot;8a938091-7b1b-b753-017b-3f25f7540509&quot;
+}
+</code></pre>
+<p>The client calls the $disconnect flow when the user navigates to a different page or the tab is closed. The lambda function just deletes the connectionId from the DynamoDB data store</p>
+<h3 id="sending-messages-to-the-client"><a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-data-from-backend.html">Sending messages to the client</a></h3>
+<p>Messages can be sent to the connected clients using the WebSocket’s connection URL and passing the <code>connection_id</code> to whom the message needs to be sent.</p>
+<p>The publisher lambda does the following:
+1. Fetches the <code>connection_id</code> for the corresponding <code>user_id</code>
+2. send the message using the AWS SDK for API Gateway, which leverages the <code>connection_id</code> and automatically sends the message</p>
+<h3 id="factors-to-consider-while-using-websockets">Factors to consider while using WebSockets</h3>
+<ol>
+<li>Cost - Websockets have a few factors considered for the pricing:</li>
+<li>We are charged for every minute a connection is kept alive</li>
+<li>The number of messages sent in the connection</li>
+<li>The connection timeouts, quotas, and limits:</li>
+<li>500 connections per second</li>
+<li>Message Payload size: 128 KB</li>
+<li>Idle Connection Timeout - 10 minutes</li>
+<li>Connection duration for WebSocket API - 2 hours</li>
+</ol>
+<h3 id="steps-to-create-the-notifications-service">Steps to create the Notifications service</h3>
+<p>The notifications service will be composed of 2 lambda functions:
+1. <a href="../WebsocketSetup/src/event_handler.py"><code>event_handler</code></a> - this lambda function is responsible for handling the connections - creating and deleting them from the <code>connection-management</code> DynamoDB table
+2. <a href="../WebsocketSetup/src/message_publisher.py"><code>message_publisher</code></a> - this lambda function is responsible for sending messages to the client using the <code>connection_id</code> by leveraging the API </p>
+<h3 id="steps-to-create-a-websocket-api">Steps to create a WebSocket API</h3>
+<p>Navigate to the API Gateway service on the AWS console and click on <code>Create API</code>, select <code>Build</code> under the <code>WebSocket API</code> section and provide the following details in each section:</p>
+<ol>
+<li>Step 1 (API Details)</li>
+<li>API Name - Name of the API we want to create. Ex: <code>awesome-food-app</code></li>
+<li>Route selection expression - API Gateway uses the route selection expression to determine which route to invoke when a client sends a message. You can provide the standard <code>$request.body.action</code></li>
+<li>Step 2 (Add Routes) - configure the list of routes you want to add for the API. You can just add the <code>Predefined Routes</code>:</li>
+<li><code>$connect</code> - triggered when a client connects to your API</li>
+<li><code>$disconnect</code> - triggered when either the server or the client closes the connection</li>
+<li><code>$default</code> - triggered if the route selection expression can't be evaluated against the message or if no matching route is found
+   and click on <code>Next</code></li>
+<li>Step 3 (Attach Integrations) - this step is used to configure the target for the routes configured in the previous section. For every route configured, select the <code>Integration Type</code> as <code>Lambda</code> and provide the name of the notifications service lambda function name created above</li>
+<li>Step 4 (Add Stages) - configure stage name for your WebSocket API. Ex: <code>dev</code></li>
+<li>Step 5 (Review &amp; Create) - review all the configuration details and click on <code>Create and Deploy</code> if everything looks good </li>
+</ol>
+<p>Once the API is created, you can del</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../EventBridge/" class="md-footer__link md-footer__link--prev" aria-label="Previous: EventBridge" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              EventBridge
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../dynamodb/" class="md-footer__link md-footer__link--next" aria-label="Next: Dynamodb" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Dynamodb
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.8492ddcf.min.js"></script>
+      
+    
+  </body>
+</html>
