@@ -20,7 +20,7 @@ def get_connection_id(user_id):
     return connection_details["Items"][0]["connection_id"]
 
 
-def lambda_function(event, context):
+def lambda_handler(event, context):
     print("Input", event)
     event_details = event["detail"]
     user_id = event_details["user_id"]

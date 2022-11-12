@@ -13,14 +13,14 @@ ddb_client = boto3.resource("dynamodb")
 table = ddb_client.Table("foodorder")
 
 
-def lambda_function(event, context):
+def lambda_handler(event, context):
     print("Input", event)
     time.sleep(10)
 
     order_details = event["detail"]
     order_id = order_details["order_id"]
 
-    response = table.update_item(
+    table.update_item(
         Key={"ID": order_id, "Type": "Order"},
         UpdateExpression="SET order_status= :var1, order_delivered_at= :var2",
         ExpressionAttributeValues={
@@ -32,7 +32,6 @@ def lambda_function(event, context):
 
     order_details = {
         "order_id": order_details["order_id"],
-        "order_details": order_details["order_details"],
         "order_status": ORDER_STATUSES["ORDER_DELIVERED"],
         "user_id": order_details["user_id"],
     }

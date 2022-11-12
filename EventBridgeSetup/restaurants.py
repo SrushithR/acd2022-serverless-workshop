@@ -16,7 +16,7 @@ ddb_client = boto3.resource("dynamodb")
 table = ddb_client.Table("foodorder")
 
 
-def lambda_function(event, context):
+def lambda_handler(event, context):
     print("Input to the restaurants service", event)
     time.sleep(10)
     order_details = event["detail"]
@@ -36,7 +36,6 @@ def lambda_function(event, context):
 
     order_details = {
         "order_id": order_details["order_id"],
-        "order_details": order_details["order_details"],
         "order_status": ORDER_STATUSES["ORDER_ACCEPTED"],
         "user_id": order_details["user_id"],
     }

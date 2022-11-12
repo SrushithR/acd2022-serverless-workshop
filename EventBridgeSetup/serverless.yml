@@ -134,7 +134,7 @@ functions:
     handler: delivery.lambda_function
     name: delivery_service
   orders_service:
-    handler: orders.lambda_function
+    handler: orders.lambda_handler
     name: orders_service
     events:
       - http:
