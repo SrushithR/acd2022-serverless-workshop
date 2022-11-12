@@ -15,7 +15,7 @@ table = ddb_client.Table("foodorder")
 
 def lambda_function(event, context):
     print("Input", event)
-    time.sleep(5)
+    time.sleep(10)
 
     order_details = event["detail"]
     order_id = order_details["order_id"]
