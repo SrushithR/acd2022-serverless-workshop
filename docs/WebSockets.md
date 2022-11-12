@@ -130,11 +130,9 @@ Update the `event_handler` and `message_publisher` lambda function's permissions
         },
         {
             "Action": [
-                "execute-api:ManageConnections"
+                "execute-api:*"
             ],
-            "Resource": [
-                "arn:aws:execute-api:*:*:*/@connections/*"
-            ],
+            "Resource": "*",
             "Effect": "Allow"
         }
     ]
