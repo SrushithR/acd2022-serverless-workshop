@@ -1,5 +1,7 @@
 # UI integration
 
+After completing the API endpoints and the Cognito part on the backend, follow the steps for the integration in the UI - 
+
 ### Setting up the UI Code base
 - Navigate to GitHub and [clone the repository](https://github.com/rashmisubhash/fooed-delivery-app) 
 - Open the project in your code editor and a new terminal
@@ -9,9 +11,11 @@
 
 - Go to *axios.config.js* in the src folder -> replace the API and socket *base url* with your *end point* from the API segment
 - Go to *UserPool.js* file in the src folder, replace the client_id and UserPoolId with yours from the Cognito segment
-- `npm run build` on your terminal
+- `npm run build` on your terminal - It will optimize, compile, and dump the static files required to serve your application in a build directory. 
 
 # Deploy to S3
+
+The application uses S3 bucket to deploy the web application. Deploying static files requires far fewer moving parts than an app with a server. There’s less to set up and less to maintain. Because there’s less to set up and maintain, the cost of deploying a static application can be dramatically cheaper.
 
 ### Create a new S3 bucket
 
@@ -86,6 +90,12 @@ aws s3 sync build/ s3://your-bucket-name`
 The deploy script above is as simple as it gets. It takes the contents of the build directory (produced by npm run build) and replaces whatever is currently in your bucket with those contents.
 
 # Deploy to CloudFront
+
+If it works on S3, why bother with CloudFront?
+
+CloudFront is the Content Delivery Network (CDN) service offered by AWS. CDNs optimize for speed by pushing your content out to edge locations, making it highly available around the globe. If your users are only local, the performance offered by S3 may be just fine.
+
+### Follow the steps below
 
 - Select theCloudFront service in the AWS console, click Create Distribution, then under the web delivery method, click Get Started.
 
