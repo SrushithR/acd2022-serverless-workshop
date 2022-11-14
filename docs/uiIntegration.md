@@ -9,7 +9,7 @@ After completing the API endpoints and the Cognito part on the backend, follow t
 
 ### API and Cognito integration in the UI
 
-- Go to *axios.config.js* in the src/CRUD folder, replace the API and socket *base url* with your *end point* from the API segment
+- Go to *axios.config.js* in the src/crud folder, replace the API and socket *base url* with your *end point* from the API segment
 - Go to *UserPool.js* file in the src folder, replace the client_id and UserPoolId with yours from the Cognito segment
 - `npm run build` on your terminal - It will optimize, compile, and dump the static files required to serve your application in a build directory. 
 
