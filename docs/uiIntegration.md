@@ -9,7 +9,7 @@ After completing the API endpoints and the Cognito part on the backend, follow t
 
 ### API and Cognito integration in the UI
 
-- Go to *axios.config.js* in the src folder, replace the API and socket *base url* with your *end point* from the API segment
+- Go to *axios.config.js* in the src/crud folder, replace the API and socket *base url* with your *end point* from the API segment
 - Go to *UserPool.js* file in the src folder, replace the client_id and UserPoolId with yours from the Cognito segment
 - `npm run build` on your terminal - It will optimize, compile, and dump the static files required to serve your application in a build directory. 
 
@@ -93,7 +93,7 @@ CloudFront is the Content Delivery Network (CDN) service offered by AWS. CDNs op
 
 ### Follow the steps below
 
-- Select theCloudFront service in the AWS console, click Create Distribution, then under the web delivery method, click Get Started.
+- Select the CloudFront service in the AWS console, click Create Distribution, then under the web delivery method, click Get Started.
 
 - Select your Origin Settings. The Origin Domain Name choices pre-populate with S3 buckets. Selecting yours will also populate the Origin ID.
 
